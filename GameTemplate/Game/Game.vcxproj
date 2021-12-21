@@ -168,6 +168,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerAttackEnemy.cpp" />
     <ClCompile Include="PlayerUi.cpp" />
+    <ClCompile Include="Shop.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -196,6 +197,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerAttackEnemy.h" />
     <ClInclude Include="PlayerUi.h" />
+    <ClInclude Include="Shop.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Stuck.h" />
     <ClInclude Include="system\system.h" />

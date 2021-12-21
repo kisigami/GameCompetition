@@ -8,19 +8,15 @@ class GameCamera;
 class Enemy;
 class PlayerAttackEnemy;
 class Tower;
-class BreakTower;
-class Hp;
 class Fade;
 class GameOver;
 class GameClear;
 class MagicEnemy;
-class Stuck;
-class Heal;
 class LongSwordEnemy;
 class TwoSwordEnemy;
 class TowerUi;
 class PlayerUi;
-
+class Shop;
 
 class Game : public IGameObject
 {
@@ -57,47 +53,48 @@ public:
 		return 	m_AllEnemynum == m_DeadEnemynum;
 
 	}
-	int a = 0;
-	bool ExitEnemy = false;
-	ModelRender m_modelRender;
-	LevelRender m_levelRender0;
-	LevelRender m_levelRender1;
-	LevelRender m_levelRender2;
-	LevelRender m_levelRender3;
-	LevelRender m_levelRender4;
-	LevelRender m_levelRender5;
-	Player* m_player = nullptr;
-	Background* m_background = nullptr;
-	GameCamera* m_gameCamera = nullptr;
-	SkyCube* m_skyCube = nullptr;
-	Enemy* m_enemy = nullptr;
-	Tower* m_tower = nullptr;;
-	Hp* m_hp = nullptr;;
-	Fade* m_fade = nullptr;
-	bool           m_isWaitFadeout = false;
-	GameOver* m_gameOver = nullptr;
-	GameClear* m_gameclear = nullptr;
-	PlayerAttackEnemy* m_playerattackenemy = nullptr;
-	MagicEnemy* m_magicenemy = nullptr;
-	Stuck* m_stuck = nullptr;;
-	Heal* m_heal = nullptr;;
-	FontRender timeFont1;
-	FontRender timeFont2;
-	FontRender timeFont3;
-	//float gametimeFont = 15.0f;
-	float gametimeFont = 5.0f;
-	LongSwordEnemy* m_longswordenemy = nullptr;;
-	TwoSwordEnemy* m_twoswordenemy = nullptr;;
+
+	
+	ModelRender          m_modelRender;
+	LevelRender          m_levelRender0;
+	LevelRender          m_levelRender1;
+	LevelRender          m_levelRender2;
+	LevelRender          m_levelRender3;
+	LevelRender          m_levelRender4;
+	LevelRender          m_levelRender5;
+	FontRender           timeFont1;
+	FontRender           timeFont2;
+	FontRender           timeFont3;
+	SoundSource*         m_bgm = nullptr;
+	Player*              m_player = nullptr;
+	Background*          m_background = nullptr;
+	GameCamera*          m_gameCamera = nullptr;
+	SkyCube*             m_skyCube = nullptr;
+	Tower*               m_tower = nullptr;;
+	Fade*                m_fade = nullptr;
+	GameOver*            m_gameOver = nullptr;
+	GameClear*           m_gameclear = nullptr;
+	TowerUi*             m_towerui = nullptr;
+	PlayerUi*            m_playerui = nullptr;
+	Enemy*               m_enemy = nullptr;
+	PlayerAttackEnemy*   m_playerattackenemy = nullptr;
+	MagicEnemy*          m_magicenemy = nullptr;
+	LongSwordEnemy*      m_longswordenemy = nullptr;;
+	TwoSwordEnemy*       m_twoswordenemy = nullptr;;
+	Shop*                m_shop = nullptr;
+
+	bool                 m_isWaitFadeout = false;
+
 	int m_AllEnemynum = 0;
 	int m_DeadEnemynum = 0;
-	bool GameClearFlag = false;
-	bool GameOverFlag = false;
-	SoundSource* m_bgm = nullptr;
-	TowerUi* m_towerui = nullptr;
-	PlayerUi* m_playerui = nullptr;
+
+	bool m_GameClearFlag = false;
+	bool m_GameOverFlag = false;
+
+	float  m_battletime = 0.0f;
+	float  m_gametimeFont = 15.0f;
+
 	EnGameState m_gameState = enGameState_Idle;
 	EnWaveState m_waveState = enWaveState_0;
-	float battletime = 0.0f;
-	BreakTower* m_breaktower = nullptr;
 };
 

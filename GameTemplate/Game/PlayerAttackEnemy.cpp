@@ -145,6 +145,7 @@ void PlayerAttackEnemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enPlayerAttackEnemyState_Down;
+				m_player->HavePoint += 100;
 			}
 			//０以外なら
 			else
@@ -166,8 +167,8 @@ void PlayerAttackEnemy::Collision()
 				//HPが0になったら。
 				if (m_hp == 0)
 				{
-
 					m_enemyState = enPlayerAttackEnemyState_Down;
+					m_player->HavePoint += 100;
 				}
 				else {
 

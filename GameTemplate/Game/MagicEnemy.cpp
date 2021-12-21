@@ -129,6 +129,7 @@ void MagicEnemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enMagicEnemyState_Down;
+				m_player->HavePoint += 100;
 			}
 			//０以外なら
 			else
@@ -150,8 +151,8 @@ void MagicEnemy::Collision()
 				//HPが0になったら。
 				if (m_hp == 0)
 				{
-
 					m_enemyState = enMagicEnemyState_Down;
+					m_player->HavePoint += 100;
 				}
 				else {
 

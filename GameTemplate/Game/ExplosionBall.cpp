@@ -13,17 +13,19 @@ ExplosionBall::ExplosionBall()
 
 ExplosionBall::~ExplosionBall()
 {
-
+	m_effectEmitter->Stop();
+	DeleteGO(m_effectEmitter);
+	DeleteGO(m_collisionObject);
 }
 
 bool ExplosionBall::Start()
 {
 	m_player = FindGO<Player>("player");
-	EffectEngine::GetInstance()->ResistEffect(10, u"Assets/efk/explosion.efk");
+	EffectEngine::GetInstance()->ResistEffect(10, u"Assets/efk/explosionball.efk");
 
 	m_effectEmitter = NewGO <EffectEmitter>(0);
 	m_effectEmitter->Init(10);
-	m_effectEmitter->SetScale(m_scale* 1.5f);
+	m_effectEmitter->SetScale(m_scale* 0.3f);
 	m_moveSpeed = Vector3::AxisZ;
 	m_rotation.Apply(m_moveSpeed);
 	m_position += m_moveSpeed * 50.0f;
@@ -34,7 +36,7 @@ bool ExplosionBall::Start()
 	m_effectEmitter->Play();
 
 	m_collisionObject = NewGO<CollisionObject>(0);
-	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 80.0f * m_scale.z);
+	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 40.0f * m_scale.z);
 	m_collisionObject->SetIsEnableAutoDelete(false);
 	m_collisionObject->SetName("explosion_magic");
 	return true;
@@ -48,7 +50,7 @@ void ExplosionBall::Update()
 
 	m_timer += g_gameTime->GetFrameDeltaTime();
 
-	if (m_timer >= 5.0f)
+	if (m_timer >= 0.6f)
 	{
 		//©g‚ğíœ‚·‚éB
 		DeleteGO(this);

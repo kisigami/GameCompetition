@@ -220,6 +220,7 @@ void TwoSwordEnemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enEnemyState_Down;
+				m_player->HavePoint += 100;
 			}
 			else
 			{
@@ -239,6 +240,7 @@ void TwoSwordEnemy::Collision()
 			if (m_hp == 0)
 			{
 				m_enemyState = enEnemyState_Down;
+				m_player->HavePoint += 100;
 			}
 			else
 			{

@@ -871,7 +871,7 @@ void Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	else if (wcscmp(eventName, L"magic_attack") == 0)
 	{
 		//–‚–@UŒ‚‚ğì¬‚·‚é
-		MakeMagicBall();
+		MakeExplosionBall();
 		//MakeExplosionBall();
 		m_mp -= 10;
 	}
