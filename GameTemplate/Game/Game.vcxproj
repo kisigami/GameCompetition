@@ -174,7 +174,6 @@
     </ClCompile>
     <ClCompile Include="Stuck.cpp" />
     <ClCompile Include="system\system.cpp" />
-    <ClCompile Include="test.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="TowerUi.cpp" />
@@ -200,7 +199,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Stuck.h" />
     <ClInclude Include="system\system.h" />
-    <ClInclude Include="test.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tower.h" />
     <ClInclude Include="TowerUi.h" />

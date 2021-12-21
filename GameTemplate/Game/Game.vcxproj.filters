@@ -63,7 +63,6 @@
     <ClCompile Include="PlayerUi.cpp" />
     <ClCompile Include="ExplosionBall.cpp" />
     <ClCompile Include="GamePoint.cpp" />
-    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -113,6 +112,5 @@
     <ClInclude Include="PlayerUi.h" />
     <ClInclude Include="ExplosionBall.h" />
     <ClInclude Include="GamePoint.h" />
-    <ClInclude Include="test.h" />
   </ItemGroup>
 </Project>
