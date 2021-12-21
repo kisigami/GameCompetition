@@ -159,6 +159,7 @@ void Enemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enEnemyState_Down;
+				m_game->m_DeadEnemynum++;
 			}
 			else
 			{
@@ -178,6 +179,7 @@ void Enemy::Collision()
 			if (m_hp == 0)
 			{
 				m_enemyState = enEnemyState_Down;
+				m_game->m_DeadEnemynum++;
 			}
 			else
 			{
@@ -287,7 +289,7 @@ void Enemy::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_ElectricShock, 0.1f);
 		break;
 	case enEnemyState_Down:
-		m_modelRender.SetAnimationSpeed(1.4f);
+		m_modelRender.SetAnimationSpeed(1.7f);
 		m_modelRender.PlayAnimation(enAnimationClip_Down, 0.1f);
 		break;
 	default:
@@ -455,10 +457,9 @@ void Enemy::ProcessDownTransition()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		DeathEffect();
 		//他のステートに遷移する	
 		DeleteGO(this);
-		DeathEffect();
-		m_game->m_DeadEnemynum++; 
 		return;
 	}
 }

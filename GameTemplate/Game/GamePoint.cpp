@@ -20,6 +20,7 @@ bool GamePoint::Start()
 {
 	EffectEngine::GetInstance()->ResistEffect(25, u"Assets/efk/enemydeath.efk");
 	m_effectEmitter = NewGO <EffectEmitter>(0);
+	m_effectEmitter->SetScale(Vector3(2.0f, 3.0f, 2.0f));
 	m_effectEmitter->SetRotation(m_rotation);
 	m_effectEmitter->SetPosition(m_position);
 	m_effectEmitter->Init(25);
@@ -28,18 +29,22 @@ bool GamePoint::Start()
 	m_collisionObject = NewGO<CollisionObject>(0);
 	m_collisionObject->CreateSphere(m_position,
 		Quaternion::Identity,
-		40.0f);
+		120.0f);
 
 	m_collisionObject->SetIsEnableAutoDelete(false);
 	m_collisionObject->SetName("enemy_point");
+
 	return true;
 }
 
 void GamePoint::Update()
 {
+
 	m_timer -= g_gameTime->GetFrameDeltaTime();
-	if (m_timer >= 3.0)
+
+	if (m_timer <= 0.0)
 	{
+		m_effectEmitter->Stop();
 		DeleteGO(this);
 	}
 }

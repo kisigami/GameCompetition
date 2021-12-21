@@ -132,12 +132,12 @@ void Game::Update()
 {
 	if (m_isWaitFadeout) {
 		if (!m_fade->IsFade()) {
-			if (GameEndFlag == true) {
+			if (GameClearFlag == true) {
 				NewGO<GameClear>(0, "gameclear");
 				DeleteGO(this);
 				return;
 			}
-			else if (m_tower->TowerBreak == true)
+			else if (GameOverFlag == true)
 			{
 				NewGO<GameOver>(0, "gameover");
 				DeleteGO(this);
@@ -602,13 +602,14 @@ void Game::GameOverNotice()
 {
 	m_isWaitFadeout = true;
 	m_fade->StartFadeOut();
+	GameOverFlag = true;
 }
 
 void Game::GameClearNotice()
 {
 	m_isWaitFadeout = true;
 	m_fade->StartFadeOut();
-	GameEndFlag = true;
+	GameClearFlag = true;
 }
 
 void Game::Render(RenderContext& rc)

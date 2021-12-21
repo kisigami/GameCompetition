@@ -84,12 +84,14 @@ public:
 	FontRender timeFont1;
 	FontRender timeFont2;
 	FontRender timeFont3;
-	float gametimeFont = 15.0f;
+	//float gametimeFont = 15.0f;
+	float gametimeFont = 5.0f;
 	LongSwordEnemy* m_longswordenemy = nullptr;;
 	TwoSwordEnemy* m_twoswordenemy = nullptr;;
 	int m_AllEnemynum = 0;
 	int m_DeadEnemynum = 0;
-	bool GameEndFlag = false;
+	bool GameClearFlag = false;
+	bool GameOverFlag = false;
 	SoundSource* m_bgm = nullptr;
 	TowerUi* m_towerui = nullptr;
 	PlayerUi* m_playerui = nullptr;

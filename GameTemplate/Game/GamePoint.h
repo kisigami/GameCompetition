@@ -1,4 +1,5 @@
 #pragma once
+
 class GamePoint :public IGameObject
 {
 public:
@@ -25,7 +26,7 @@ public:
 	Vector3	m_scale = Vector3::One;
 	Vector3	m_moveSpeed;
 	EffectEmitter* m_effectEmitter = nullptr;
-	float	m_timer = 0.0f;
-	CollisionObject* m_collisionObject;
+	float	m_timer = 3.0f;
+	CollisionObject* m_collisionObject = nullptr;
 };
 

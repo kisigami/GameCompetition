@@ -295,17 +295,17 @@ void Player::Collision()
 		}
 	}
 
-	//const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("enemy_point");
+	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("enemy_point");
 	//配列をfor文で回す
-	//for (auto collision : collisions3)
-	//{
+	for (auto collision : collisions3)
+	{
 		//コリジョンとキャラコンが衝突したら
-	//	if (collision->IsHit(m_charaCon))
-	//	{
-	//		DeleteGO(collision);
-	//		HavePoint += 100;
-	//	}
-	//}
+		if (collision->IsHit(m_charaCon))
+		{
+			HavePoint += 100;
+			DeleteGO(collision);
+		}
+	}
 }
 
 void Player::Attack()
@@ -541,12 +541,11 @@ void Player::MakeEnemyStopEffect()
 
 void Player::ProcessCommonStateTransition()
 {
-	//if (m_game->IsWannihilationEnemy())
-	//{
-		//クリアステートに移行する。
-	//	m_playerState = enPlayerState_Win;
-	//	return;
-	//}
+	if (m_tower->m_hp <= 0)
+	{
+		m_playerState = enPlayerState_Down;
+		return;
+	}
 
 	//RBボタンが押される&攻撃タイプが0なら
 	if (g_pad[0]->IsTrigger(enButtonRB2) && Type == 0)
@@ -704,7 +703,6 @@ void Player::ProcessWinStateTransition()
 {
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		m_game->GameEndFlag = true;
 		m_game->GameClearNotice();
 	}
 }
@@ -715,6 +713,7 @@ void Player::ProcessDownStateTransition()
 	{
 		//ステートを遷移する
 		ProcessCommonStateTransition();
+		m_game->GameOverNotice();
 	}
 }
 

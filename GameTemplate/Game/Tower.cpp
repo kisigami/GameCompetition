@@ -22,7 +22,7 @@ Tower::~Tower()
 
 bool Tower::Start()
 {
-	EffectEngine::GetInstance()->ResistEffect(8, u"Assets/efk/breaktower.efk");
+	EffectEngine::GetInstance()->ResistEffect(8, u"Assets/efk/Smoke.efk");
 	//EffectEngine::GetInstance()->ResistEffect(9, u"Assets/efk/towerbreak2.efk");
 	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/towerbreak.wav");
 
@@ -162,7 +162,6 @@ void Tower::ProcessCommonStateTransition()
 		{
 			m_BreakState = enBreakState_AllBreak;
 			BreakEffect();
-
 		}
 		else if (m_hp > 100)
 		{
