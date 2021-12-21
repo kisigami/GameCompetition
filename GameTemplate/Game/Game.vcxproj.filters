@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="system">
+      <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enemy">
+      <UniqueIdentifier>{164f60d7-bc8e-4a52-8a95-6a68c9da6693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sprite">
+      <UniqueIdentifier>{30c15dec-a7f7-48f1-bea6-96546ee4fa08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="item">
+      <UniqueIdentifier>{71a9cfa6-6bef-4dd4-a5ec-38fb6fa74502}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="system\system.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameCamera.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Background.cpp" />
+    <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="IceBall.cpp" />
+    <ClCompile Include="Enemy.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAttackEnemy.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicEnemy.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClear.cpp">
+      <Filter>sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOver.cpp">
+      <Filter>sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Stuck.cpp">
+      <Filter>item</Filter>
+    </ClCompile>
+    <ClCompile Include="Heal.cpp">
+      <Filter>item</Filter>
+    </ClCompile>
+    <ClCompile Include="LongSwordEnemy.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="TwoSwordEnemy.cpp">
+      <Filter>enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerUi.cpp" />
+    <ClCompile Include="PlayerUi.cpp" />
+    <ClCompile Include="ExplosionBall.cpp" />
+    <ClCompile Include="GamePoint.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="system\system.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameCamera.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Background.h" />
+    <ClInclude Include="Tower.h" />
+    <ClInclude Include="IceBall.h" />
+    <ClInclude Include="Enemy.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAttackEnemy.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicEnemy.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClear.h">
+      <Filter>sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOver.h">
+      <Filter>sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.h">
+      <Filter>sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Stuck.h">
+      <Filter>item</Filter>
+    </ClInclude>
+    <ClInclude Include="Heal.h">
+      <Filter>item</Filter>
+    </ClInclude>
+    <ClInclude Include="LongSwordEnemy.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="TwoSwordEnemy.h">
+      <Filter>enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="TowerUi.h" />
+    <ClInclude Include="PlayerUi.h" />
+    <ClInclude Include="ExplosionBall.h" />
+    <ClInclude Include="GamePoint.h" />
+  </ItemGroup>
+</Project>

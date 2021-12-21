@@ -1,0 +1,10 @@
+System.AccessViolationException: 保護されているメモリに読み取りまたは書き込み操作を行おうとしました。他のメモリが壊れていることが考えられます。
+   場所 Effekseer.swig.EffekseerNativePINVOKE.Native_LoadEffect(HandleRef jarg1, IntPtr jarg2, Int32 jarg3, String jarg4)
+   場所 Effekseer.GUI.Viewer.Export()
+   場所 Effekseer.GUI.Viewer.PlayNew()
+   場所 Effekseer.GUI.Dock.ViewerController.UpdateInternal()
+   場所 Effekseer.GUI.Dock.DockPanel.Update()
+   場所 Effekseer.GUI.Dock.DockManager.Update()
+   場所 Effekseer.GUI.Manager.Update()
+   場所 Effekseer.Program.Exec(Boolean gui, String input, String output, String export, String format, Single magnification, Boolean materialCache)
+   場所 Effekseer.Program.Main(String[] args)
