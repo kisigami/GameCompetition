@@ -76,6 +76,9 @@ bool Player::Start()
 	m_sprintRender2.SetPosition(Vector3(850.0f, -450.0f, 0.0f));
 	m_sprintRender3.Init("Assets/sprite/Item/Heal.dds", 128.0f, 128.0f);
 	m_sprintRender3.SetPosition(Vector3(850.0f, -450.0f, 0.0f));
+	m_itemWaku.Init("Assets/sprite/item/itemwaku.dds", 1920.0f, 1080.0f);
+	m_itemStop.Init("Assets/sprite/item/itemstop.dds", 1920.0f, 1080.0f);
+	m_itemHeal.Init("Assets/sprite/item/itemheal.dds", 1920.0f, 1080.0f);
 
 	//剣のボーンIDを取得する
 	m_swordBoneId = m_modelRender.FindBoneID(L"sword");
@@ -133,6 +136,7 @@ void Player::Update()
 	m_sprintRender.Update();
 	m_sprintRender2.Update();
 	m_sprintRender3.Update();
+
 }
 
 void Player::Hit()
@@ -601,6 +605,17 @@ void Player::ProcessCommonStateTransition()
 			}
 		}
 	}
+
+	if (g_pad[0]->IsTrigger(enButtonLB1))
+	{
+		m_UseMagic = enUseMagic_PowerMagic;
+		return;
+	}
+	if (g_pad[0]->IsTrigger(enButtonRB1))
+	{
+		m_UseMagic = enUseMagic_NormalMagic;
+		return;
+	}
 	//LB2ボタンが押されたら
 	if (m_mp >= 10)
 	{
@@ -870,10 +885,18 @@ void Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	//キーの名前が「magic_attack」なら
 	else if (wcscmp(eventName, L"magic_attack") == 0)
 	{
-		//魔法攻撃を作成する
-		MakeExplosionBall();
-		//MakeExplosionBall();
 		m_mp -= 10;
+		switch (m_UseMagic)
+		{
+		case Player::enUseMagic_NormalMagic:
+			MakeMagicBall();
+			break;
+		case Player::enUseMagic_PowerMagic:
+			MakeExplosionBall();
+			break;
+		default:
+			break;
+		}
 	}
 	//キーの名前が「thunder3」なら
 	if (wcscmp(eventName, L"useitem") == 0)
@@ -897,5 +920,17 @@ void Player::Render(RenderContext& rc)
 	m_sprintRender.Draw(rc);
 	m_sprintRender2.Draw(rc);
 	m_sprintRender3.Draw(rc);
-
+	m_itemWaku.Draw(rc);
+	
+	switch (m_equipState)
+	{
+	case Player::enEquipState_No:
+		break;
+	case Player::enEquipState_Heal:
+		m_itemHeal.Draw(rc);
+		break;
+	case Player::enEquipState_Thuner:
+		m_itemStop.Draw(rc);
+		break;
+	}
 }

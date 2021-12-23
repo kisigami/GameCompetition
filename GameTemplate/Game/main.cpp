@@ -11,7 +11,7 @@
 #include "Title.h"
 #include "Game.h"
 #include "Fade.h"
-
+#include "BattleStartFade.h"
 
 void ReportLiveObjects()
 {
@@ -58,6 +58,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//Gameクラスのオブジェクトを作成。
 	NewGO<Title>(0, "title");
+	NewGO<BattleStartFade>(3, "battlestartfade");
 	NewGO<Fade>(2, "fade");
 	//////////////////////////////////////
 	// 初期化を行うコードを書くのはここまで！！！

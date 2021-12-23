@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
+    <ClCompile Include="BattleStartFade.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="ExplosionBall.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -182,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background.h" />
+    <ClInclude Include="BattleStartFade.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="ExplosionBall.h" />
     <ClInclude Include="Fade.h" />

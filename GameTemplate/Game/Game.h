@@ -17,6 +17,7 @@ class TwoSwordEnemy;
 class TowerUi;
 class PlayerUi;
 class Shop;
+class BattleStartFade;
 
 class Game : public IGameObject
 {
@@ -79,11 +80,13 @@ public:
 	Enemy*               m_enemy = nullptr;
 	PlayerAttackEnemy*   m_playerattackenemy = nullptr;
 	MagicEnemy*          m_magicenemy = nullptr;
-	LongSwordEnemy*      m_longswordenemy = nullptr;;
-	TwoSwordEnemy*       m_twoswordenemy = nullptr;;
+	LongSwordEnemy*      m_longswordenemy = nullptr;
+	TwoSwordEnemy*       m_twoswordenemy = nullptr;
 	Shop*                m_shop = nullptr;
+	BattleStartFade*     m_battlestartfade = nullptr;
 
 	bool                 m_isWaitFadeout = false;
+	bool                 m_isWaitBattleFadeout = false;
 
 	int m_AllEnemynum = 0;
 	int m_DeadEnemynum = 0;

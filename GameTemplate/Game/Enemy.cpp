@@ -143,7 +143,7 @@ void Enemy::Collision()
 			m_enemyState = enEnemyState_ElectricShock;
 		}
 	}
-	
+
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
 	for (auto collision : collisions)
 	{
@@ -194,25 +194,8 @@ void Enemy::Collision()
 	{
 		if (collision->IsHit(m_charaCon))
 		{
-			m_hp -= 1;
-			//コリジョンオブジェクトを作成する
-			CollisionObject * m_collisionObject;
-			m_collisionObject = NewGO<CollisionObject>(0);
-			//球状のコリジョンを作成する
-			m_collisionObject->CreateSphere(m_position,
-				Quaternion::Identity,
-				300.0f);
-			m_collisionObject->SetName("explosion");
-			EffectEmitter* effectEmitter1 = NewGO<EffectEmitter>(0);
-			effectEmitter1->Init(11);
-			effectEmitter1->SetScale(Vector3::One * 8.0f);
-			Vector3 EffectPosition = m_position;
-			EffectPosition.y += 200.0f;
-			effectEmitter1->SetPosition(EffectPosition);
-			//エフェクトを再生する
-			effectEmitter1->Play();
-			//HPが0になったら。
-			if (m_hp == 0)
+			m_hp -= 2;
+			if (m_hp <= 0)
 			{
 				m_enemyState = enEnemyState_Down;
 				m_player->HavePoint += 100;
@@ -224,6 +207,7 @@ void Enemy::Collision()
 		}
 	}
 }
+
 
 void Enemy::Assult()
 {

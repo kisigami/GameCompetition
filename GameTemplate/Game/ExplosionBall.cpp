@@ -50,7 +50,7 @@ void ExplosionBall::Update()
 
 	m_timer += g_gameTime->GetFrameDeltaTime();
 
-	if (m_timer >= 0.6f)
+	if (m_timer >= 3.0f)
 	{
 		//©g‚ğíœ‚·‚éB
 		DeleteGO(this);

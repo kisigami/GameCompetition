@@ -19,6 +19,7 @@
 #include "TowerUi.h"
 #include "PlayerUi.h"
 #include "Shop.h"
+#include "BattleStartFade.h"
 
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
@@ -61,18 +62,16 @@ Game::~Game()
 bool Game::Start()
 {
 	g_soundEngine->ResistWaveFileBank(22, "Assets/sound/gamebgm.wav");
-
 	m_gameclear = FindGO<GameClear>("gameclear");
 	m_towerui = NewGO<TowerUi>(0, "towerui");
 	m_playerui = NewGO<PlayerUi>(0, "playerui");
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");
 	m_skyCube = NewGO<SkyCube>(0, "skycube");
-	m_skyCube->SetLuminance(0.1f);
-	g_sceneLight->SetIBLTextureForAmbient(m_skyCube->GetTextureFilePath(), 0.15f);
-
+	m_skyCube->SetLuminance(1.0f);
+	g_sceneLight->SetIBLTextureForAmbient(m_skyCube->GetTextureFilePath(), 0.7f);
 	g_camera3D->SetFar(15000.0f);
-
+	
 	m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
 	m_gameCamera = FindGO<GameCamera>("gamecamera");
 
@@ -119,9 +118,9 @@ bool Game::Start()
 	m_bgm->Init(22);
 	m_bgm->Play(true);
 	m_bgm->SetVolume(0.02f);
-
 	m_fade = FindGO<Fade>("fade");
 	m_fade->StartFadeIn();
+	m_battlestartfade = FindGO<BattleStartFade>("battlestartfade");
 	m_gameOver = FindGO<GameOver>("gameover");
 
 	return true;
@@ -130,6 +129,7 @@ bool Game::Start()
 
 void Game::Update()
 {
+
 	if (m_isWaitFadeout) {
 		if (!m_fade->IsFade()) {
 			if (m_GameClearFlag == true) {
@@ -193,7 +193,7 @@ void Game::Idle()
 	
 	if (m_gametimeFont <= 1.0f)
 	{
-		m_fade->StartFadeOut();
+		m_battlestartfade->StartFadeOut();
 	}
 
 	//待機タイマーが0になったら
@@ -330,7 +330,7 @@ void Game::Idle()
 				});
 		}
 		m_gameState = enGameState_Battle();
-		m_fade->StartFadeIn();
+		m_battlestartfade->StartFadeIn();
 	}
 }
 

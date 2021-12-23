@@ -31,6 +31,11 @@ public:
 		enEquipState_Heal,
 		enEquipState_Thuner,
 	};
+	//魔法攻撃ステート
+	enum EnUseMagic {
+		enUseMagic_NormalMagic,
+		enUseMagic_PowerMagic
+	};
 public:
 	Player();
 	~Player();
@@ -147,7 +152,12 @@ public:
 		enAnimationClip_Down,
 		enAnimationClip_Num
 	};
-
+	
+	SpriteRender PlayerUseMagic;
+	SpriteRender PlayerSubMagic;
+	SpriteRender m_itemWaku;
+	SpriteRender m_itemStop;
+	SpriteRender m_itemHeal;
 	ModelRender          m_modelRender;
 	SpriteRender         m_sprintRender;
 	SpriteRender         m_sprintRender2;
@@ -163,7 +173,9 @@ public:
 	Quaternion           m_rotation;
 	CharacterController  m_charaCon;                           //キャラクターコントローラー
 	EnPlayerState        m_playerState = enPlayerState_Idle;   //ステート
-	EnEquipState         m_equipState = enEquipState_No;
+	EnEquipState         m_equipState = enEquipState_Heal;
+	//使う魔法攻撃
+	EnUseMagic           m_UseMagic = enUseMagic_NormalMagic;
 	bool                 m_isUnderAttack = false;
 	int                  m_swordBoneId = -1;
 	float                m_hp = 100;

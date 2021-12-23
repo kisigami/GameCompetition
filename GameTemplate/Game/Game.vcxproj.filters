@@ -64,6 +64,7 @@
     <ClCompile Include="ExplosionBall.cpp" />
     <ClCompile Include="GamePoint.cpp" />
     <ClCompile Include="Shop.cpp" />
+    <ClCompile Include="BattleStartFade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -114,5 +115,6 @@
     <ClInclude Include="ExplosionBall.h" />
     <ClInclude Include="GamePoint.h" />
     <ClInclude Include="Shop.h" />
+    <ClInclude Include="BattleStartFade.h" />
   </ItemGroup>
 </Project>
