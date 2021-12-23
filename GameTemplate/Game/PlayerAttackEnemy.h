@@ -66,6 +66,7 @@ public:
 	void Collision();
 	//攻撃用の当たり判定を作成する
 	void MakeAttackCollision();
+	void MakeDamageEffect();
 	//アニメーションイベント用の関数
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	//アニメーションの再生

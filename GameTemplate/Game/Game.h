@@ -95,7 +95,7 @@ public:
 	bool m_GameOverFlag = false;
 
 	float  m_battletime = 0.0f;
-	float  m_gametimeFont = 15.0f;
+	float  m_gametimeFont = 5.0f;
 
 	EnGameState m_gameState = enGameState_Idle;
 	EnWaveState m_waveState = enWaveState_0;

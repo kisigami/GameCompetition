@@ -44,7 +44,7 @@ bool Enemy::Start()
 		enModelUpAxisZ
 	);
 
-	EffectEngine::GetInstance()->ResistEffect(11, u"Assets/efk/explosion.efk");
+	EffectEngine::GetInstance()->ResistEffect(11, u"Assets/efk/enemydamage.efk");
 
 	//m_modelRender.SetTRS(m_position, m_rotation, m_scale);
 	//m_modelRender.Update();
@@ -117,15 +117,20 @@ void Enemy::MakeAttackCollision()
 	collisionObject->SetWorldMatrix(matrix);
 }
 
-void Enemy::DeathEffect()
+void Enemy::MakeDamageEffect()
 {
-	GamePoint* gamePoint = NewGO<GamePoint>(0);
-	Vector3 gamePointPosition = m_position;
-	//gamePointPosition += m_forward * 10.0f;
-	gamePointPosition.y += 30.0f;
-	gamePoint->SetPosition(gamePointPosition);
-	gamePoint->SetRotation(m_rotation);
+	EffectEmitter* m_effectEmitter;
+	m_effectEmitter = NewGO<EffectEmitter>(0);
+	Vector3 EffectPosition = m_position;
+	Vector3 EffectScale = m_scale;
+	m_effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	EffectPosition.y += 180.0f;
+	m_effectEmitter->SetPosition(EffectPosition);
+	m_effectEmitter->SetRotation(m_rotation);
+	m_effectEmitter->Init(11);
+	m_effectEmitter->Play();
 }
+
 
 void Enemy::Collision()
 {
@@ -152,6 +157,7 @@ void Enemy::Collision()
 		{
 			//HpÇå∏ÇÁÇ∑
 			m_hp -= 1;
+			MakeDamageEffect();
 			if (m_player->m_mp < 40)
 			{
 				m_player->m_mp += 5;
@@ -176,6 +182,7 @@ void Enemy::Collision()
 		if (collision->IsHit(m_charaCon))
 		{
 			m_hp -= 1;
+			MakeDamageEffect();
 			//HPÇ™0Ç…Ç»Ç¡ÇΩÇÁÅB
 			if (m_hp == 0)
 			{

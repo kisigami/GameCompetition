@@ -263,7 +263,7 @@ void Player::Collision()
 		if (collision->IsHit(m_charaCon))
 		{
 			//HP‚ðŒ¸‚ç‚·
-			m_hp -= 5;
+			m_hp -= 10;
 			//HP‚ª0‚È‚ç
 			if (m_hp == 0)
 			{
@@ -286,7 +286,7 @@ void Player::Collision()
 		if (collision->IsHit(m_charaCon))
 		{
 			//Hp‚ðŒ¸‚ç‚·
-			m_hp -= 5;
+			m_hp -= 10;
 			if (m_hp == 0)
 			{
 
@@ -424,65 +424,21 @@ void Player::MakeThirdSlashingEffect()
 
 void Player::ChoiseItem()
 {
-	if (m_equipState == enEquipState_No && g_pad[0]->IsTrigger(enButtonRight))
+	if (m_equipState == enEquipState_Heal)
+		if (g_pad[0]->IsTrigger(enButtonRight) || g_pad[0]->IsTrigger(enButtonLeft))
+		{
+			m_equipState = enEquipState_Thuner;
+			return;
+		}
+
+	if (m_equipState == enEquipState_Thuner)
 	{
-		m_equipState = enEquipState_Thuner;
-		return;
+		if (g_pad[0]->IsTrigger(enButtonRight) || g_pad[0]->IsTrigger(enButtonLeft))
+		{
+			m_equipState = enEquipState_Heal;
+			return;
+		}
 	}
-	if (m_equipState == enEquipState_Thuner && g_pad[0]->IsTrigger(enButtonRight)
-		&& Healnum >= 1)
-	{
-		m_equipState = enEquipState_Heal;
-		return;
-	}
-	if (m_equipState == enEquipState_Heal && g_pad[0]->IsTrigger(enButtonRight)
-		&& Thundernum >=1)
-	{
-		m_equipState = enEquipState_Thuner;
-		return;
-	}
-	if (m_equipState == enEquipState_No && g_pad[0]->IsTrigger(enButtonLeft))
-	{
-		m_equipState = enEquipState_Heal;
-		return;
-	}
-	if (m_equipState == enEquipState_Thuner && g_pad[0]->IsTrigger(enButtonLeft) && Healnum >= 1)
-	{
-		m_equipState = enEquipState_Heal;
-		return;
-	}
-	if (m_equipState == enEquipState_Heal && g_pad[0]->IsTrigger(enButtonLeft) && Thundernum >= 1)
-	{
-		m_equipState = enEquipState_Thuner;
-		return;
-	}
-	
-	switch (m_equipState)
-	{
-	case Player::enEquipState_No:
-		m_alpha = 1.0f;
-		m_alpha2 = 0.0f;
-		m_alpha3 = 0.0f;
-		break;
-	case Player::enEquipState_Heal:
-		m_alpha = 0.0f;
-		m_alpha2 = 0.0f;
-		m_alpha3 = 1.0f;
-		break;
-	case Player::enEquipState_Thuner:
-		m_alpha = 0.0f;
-		m_alpha2 = 1.0f;
-		m_alpha3 = 0.0f;
-		break;
-	default:
-		break;
-	}
-	//No
-	m_sprintRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0f,(m_alpha)));
-	//thunder
-	m_sprintRender2.SetMulColor(Vector4(1.0f, 1.0f, 1.0f,(m_alpha2)));
-	//heal
-	m_sprintRender3.SetMulColor(Vector4(1.0f, 1.0f, 1.0f,(m_alpha3)));
 }
 
 
@@ -598,7 +554,7 @@ void Player::ProcessCommonStateTransition()
 	{
 		if (m_tower->m_hp < 200.0f) {
 			Healnum -= 1;
-			m_tower->m_hp += 50.0f;
+			m_tower->m_hp += 30.0f;
 			if (m_tower->m_hp > 200)
 			{
 				m_tower->m_hp = 200.0f;
@@ -606,16 +562,6 @@ void Player::ProcessCommonStateTransition()
 		}
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonLB1))
-	{
-		m_UseMagic = enUseMagic_PowerMagic;
-		return;
-	}
-	if (g_pad[0]->IsTrigger(enButtonRB1))
-	{
-		m_UseMagic = enUseMagic_NormalMagic;
-		return;
-	}
 	//LB2ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
 	if (m_mp >= 10)
 	{
@@ -917,15 +863,11 @@ void Player::Render(RenderContext& rc)
 	//ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
 	m_modelRender.Draw(rc);
 	//‰æ‘œ‚ð•`‰æ‚·‚é
-	m_sprintRender.Draw(rc);
-	m_sprintRender2.Draw(rc);
-	m_sprintRender3.Draw(rc);
+	
 	m_itemWaku.Draw(rc);
 	
 	switch (m_equipState)
 	{
-	case Player::enEquipState_No:
-		break;
 	case Player::enEquipState_Heal:
 		m_itemHeal.Draw(rc);
 		break;

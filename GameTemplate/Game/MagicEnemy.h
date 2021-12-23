@@ -65,6 +65,7 @@ public:
 	void Rotation();
 	//UŒ‚ˆ—
 	void MakeMagicBall();
+	void MakeDamageEffect();
 	void Electric();
 	//ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’èˆ—
 	void Collision();

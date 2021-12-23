@@ -27,7 +27,6 @@ public:
 	};
 	//アイテムのステート
 	enum EnEquipState {
-		enEquipState_No,
 		enEquipState_Heal,
 		enEquipState_Thuner,
 	};

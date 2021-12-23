@@ -31,7 +31,7 @@ bool IceBall::Start()
 	if (m_enUser == enUser_Enemy) {
 		m_effectEmitter = NewGO <EffectEmitter>(0);
 		m_effectEmitter->Init(15);
-		m_effectEmitter->SetScale(m_scale * 0.8f);
+		m_effectEmitter->SetScale(m_scale * 1.0f);
 		m_moveSpeed = Vector3::AxisZ;
 		m_rotation.Apply(m_moveSpeed);
 		m_position += m_moveSpeed * 50.0f;
@@ -52,12 +52,12 @@ bool IceBall::Start()
 	else {
 		m_effectEmitter = NewGO <EffectEmitter>(0);
 		m_effectEmitter->Init(16);
-		m_effectEmitter->SetScale(m_scale * 0.5f);
+		m_effectEmitter->SetScale(m_scale * 1.0f);
 		m_moveSpeed = Vector3::AxisZ;
 		m_rotation.Apply(m_moveSpeed);
 		m_position += m_moveSpeed * 50.0f;
 		m_position.y += 160.0f;
-		m_moveSpeed *= 1200.0f;
+		m_moveSpeed *= 1900.0f;
 		m_rotation.AddRotationDegY(0.0f);
 		m_effectEmitter->SetRotation(m_rotation);
 		m_effectEmitter->Play();

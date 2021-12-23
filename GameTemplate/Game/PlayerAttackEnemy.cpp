@@ -111,6 +111,20 @@ void PlayerAttackEnemy::MakeAttackCollision()
 	collisionObject->SetWorldMatrix(matrix);
 }
 
+void PlayerAttackEnemy::MakeDamageEffect()
+{
+	EffectEmitter* m_effectEmitter;
+	m_effectEmitter = NewGO<EffectEmitter>(0);
+	Vector3 EffectPosition = m_position;
+	EffectPosition.y += 180.0f;
+	m_effectEmitter->SetPosition(EffectPosition);
+	m_effectEmitter->SetRotation(m_rotation);
+	Vector3 EffectScale = m_scale;
+	m_effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	m_effectEmitter->Init(11);
+	m_effectEmitter->Play();
+}
+
 void PlayerAttackEnemy::Collision()
 {
 	if (m_enemyState == enPlayerAttackEnemyState_ReceiveDamage ||
@@ -136,6 +150,7 @@ void PlayerAttackEnemy::Collision()
 		{
 			//Hp‚ðŒ¸‚ç‚·
 			m_hp -= 1;
+			MakeDamageEffect();
 			if (m_player->m_mp < 40)
 			{
 				m_player->m_mp += 5;

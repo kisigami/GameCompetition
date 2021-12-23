@@ -92,7 +92,19 @@ void MagicEnemy::MakeMagicBall()
 	iceBall->SetRotation(m_rotation);
 	iceBall->SetEnUser(IceBall::enUser_Enemy);
 }
-
+void MagicEnemy::MakeDamageEffect()
+{
+	EffectEmitter* m_effectEmitter;
+	m_effectEmitter = NewGO<EffectEmitter>(0);
+	Vector3 EffectPosition = m_position;
+	EffectPosition.y += 180.0f;
+	Vector3 EffectScale = m_scale;
+	m_effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	m_effectEmitter->SetPosition(EffectPosition);
+	m_effectEmitter->SetRotation(m_rotation);
+	m_effectEmitter->Init(11);
+	m_effectEmitter->Play();
+}
 
 void MagicEnemy::Collision()
 {
@@ -119,6 +131,7 @@ void MagicEnemy::Collision()
 		{
 			//Hp‚ðŒ¸‚ç‚·
 			m_hp -= 1;
+			MakeDamageEffect();
 			if (m_player->m_mp < 40)
 			{
 				m_player->m_mp += 10;

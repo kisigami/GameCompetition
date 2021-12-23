@@ -130,6 +130,7 @@ bool Game::Start()
 void Game::Update()
 {
 
+
 	if (m_isWaitFadeout) {
 		if (!m_fade->IsFade()) {
 			if (m_GameClearFlag == true) {
@@ -187,7 +188,7 @@ void Game::Idle()
 	{
 		return;
 	}
-
+	
 	m_battletime = 0.0f;
 	m_gametimeFont -= g_gameTime->GetFrameDeltaTime();
 	
@@ -349,20 +350,24 @@ void Game::Battle()
 		if (m_waveState == enWaveState_0)
 		{
 			m_waveState = enWaveState_1;
+
 		}
 		else if (m_waveState == enWaveState_1)
 		{
 			m_waveState = enWaveState_2;
+
 		}
 		else
 		{
 			GameClearNotice();
 		}
 
+		m_battlestartfade->StartEndFade();
 		m_gameState = enGameState_Idle;
 		m_gametimeFont = 15.0f;
+		return;
 	}
-	
+
 }
 
 void Game::ProcessCommonStateTransition()
