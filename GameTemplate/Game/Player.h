@@ -157,11 +157,12 @@ public:
 	SpriteRender m_itemWaku;
 	SpriteRender m_itemStop;
 	SpriteRender m_itemHeal;
+
 	ModelRender          m_modelRender;
 	SpriteRender         m_sprintRender;
 	SpriteRender         m_sprintRender2;
 	SpriteRender         m_sprintRender3;
-	FontRender           m_fontRender;
+	FontRender           m_fontRender1;
 	FontRender           m_fontRender2;
 	FontRender           m_fontRender3;  
 	AnimationClip			m_animationClips[enAnimationClip_Num];//アニメーションクリップ//モデルレンダー
@@ -192,8 +193,8 @@ public:
 	
 	float battleStateTimer = 0.0f;
 
-	int Thundernum = 5;
-	int Healnum = 5;
+	int Thundernum = 2;
+	int Healnum = 2;
 	float m_alpha = 0.0f;
 	float m_alpha2 = 0.0f;
 	float m_alpha3 = 0.0f;

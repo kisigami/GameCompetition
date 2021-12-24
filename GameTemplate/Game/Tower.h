@@ -26,6 +26,7 @@ public:
 	void Update();
 	void DamageInvalid();
 	void BreakEffect();
+	void TowerEffect();
 	void ProcessCommonStateTransition();
 	void Render(RenderContext& rc);
 	void Collision();

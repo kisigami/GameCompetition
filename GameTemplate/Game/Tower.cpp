@@ -6,7 +6,6 @@
 #include "collision/CollisionObject.h"
 #include "graphics/effect/EffectEmitter.h"
 
-
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
 
@@ -23,7 +22,7 @@ Tower::~Tower()
 bool Tower::Start()
 {
 	EffectEngine::GetInstance()->ResistEffect(8, u"Assets/efk/Smoke.efk");
-	//EffectEngine::GetInstance()->ResistEffect(9, u"Assets/efk/towerbreak2.efk");
+	EffectEngine::GetInstance()->ResistEffect(9, u"Assets/efk/towereffect.efk");
 	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/towerbreak.wav");
 
 	m_modelRender.Init("Assets/modelData/tower2/tower2.tkm");
@@ -57,7 +56,7 @@ bool Tower::Start()
 		300.0f,
 		m_position
 	);
-
+	TowerEffect();
 	m_enemy = FindGO<Enemy>("enemy");
 	m_game = FindGO<Game>("game");
 
@@ -78,7 +77,6 @@ void Tower::Collision()
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
-			
 			//Hpを減らす
 			m_hp -= 10;
 			if (m_hp <= 0) {
@@ -113,16 +111,16 @@ void Tower::Collision()
 			}
 		}
 	}
-
 }
 
 void Tower::BreakEffect()
 {
 	effectEmitter = NewGO<EffectEmitter>(0);
 	effectEmitter->Init(8);
-	effectEmitter->SetScale(Vector3(5.0f,10.0f,5.0f));
+	effectEmitter->SetScale(Vector3(5.0f, 10.0f, 5.0f));
 	Vector3 effectPosition = m_position;
 	effectEmitter->SetPosition(effectPosition);
+	effectPosition.y += 100.0f;
 	effectEmitter->Play();
 
 	SoundSource* m_se = NewGO<SoundSource>(0);
@@ -130,6 +128,17 @@ void Tower::BreakEffect()
 	m_se->SetVolume(0.5f);
 	m_se->Play(false);
 
+}
+
+void  Tower::TowerEffect()
+{
+	effectEmitter = NewGO<EffectEmitter>(0);
+	effectEmitter->Init(9);
+	effectEmitter->SetScale(Vector3(10.0f, 10.0f, 10.0f));
+	Vector3 effectPosition = m_position;
+	effectPosition.y += 1800.0f;
+	effectEmitter->SetPosition(effectPosition);
+	effectEmitter->Play();
 }
 
 void Tower::DamageInvalid()
@@ -183,7 +192,6 @@ void Tower::Update()
 	m_modelRender.Update();
 	m_modelRender2.Update();
 	m_modelRender3.Update();
-
 }
 
 void Tower::Render(RenderContext& rc)

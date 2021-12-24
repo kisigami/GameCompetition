@@ -130,6 +130,7 @@ void Player::Update()
 	//ステートの遷移処理
 	ManageState();
 
+
 	//モデルの更新
 	m_modelRender.Update();
 	//各画像の更新
@@ -424,15 +425,33 @@ void Player::MakeThirdSlashingEffect()
 
 void Player::ChoiseItem()
 {
-	if (m_equipState == enEquipState_Heal)
+	wchar_t text[256];
+	swprintf_s(text, 256, L"%d", Healnum);
+	m_fontRender1.SetText(text);
+	m_fontRender1.SetPosition(Vector3(808.0f, -430.0f, 0.0f));
+	m_fontRender1.SetScale(1.0f);
+
+	wchar_t text3[256];
+	swprintf_s(text3, 256, L"%d", Thundernum);
+	m_fontRender2.SetText(text3);
+	m_fontRender2.SetPosition(Vector3(808.0f, -430.0f, 0.0f));
+	m_fontRender2.SetScale(1.0f);
+
+	if (m_equipState == enEquipState_Heal) 
+	{
+		m_fontRender1.SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+		m_fontRender2.SetColor(Vector4(0.0f, 0.0f, 0.0f, 0.0f));
 		if (g_pad[0]->IsTrigger(enButtonRight) || g_pad[0]->IsTrigger(enButtonLeft))
 		{
 			m_equipState = enEquipState_Thuner;
 			return;
 		}
+	}
 
 	if (m_equipState == enEquipState_Thuner)
 	{
+		m_fontRender1.SetColor(Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+		m_fontRender2.SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 		if (g_pad[0]->IsTrigger(enButtonRight) || g_pad[0]->IsTrigger(enButtonLeft))
 		{
 			m_equipState = enEquipState_Heal;
@@ -860,12 +879,11 @@ void Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 
 void Player::Render(RenderContext& rc)
 {
+	
 	//モデルを描画する
 	m_modelRender.Draw(rc);
 	//画像を描画する
-	
 	m_itemWaku.Draw(rc);
-	
 	switch (m_equipState)
 	{
 	case Player::enEquipState_Heal:
@@ -875,4 +893,6 @@ void Player::Render(RenderContext& rc)
 		m_itemStop.Draw(rc);
 		break;
 	}
+	m_fontRender1.Draw(rc);
+	m_fontRender2.Draw(rc);
 }

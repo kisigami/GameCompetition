@@ -68,8 +68,8 @@ bool Game::Start()
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");
 	m_skyCube = NewGO<SkyCube>(0, "skycube");
-	m_skyCube->SetLuminance(1.0f);
-	g_sceneLight->SetIBLTextureForAmbient(m_skyCube->GetTextureFilePath(), 0.7f);
+	m_skyCube->SetLuminance(0.3f);
+	g_sceneLight->SetIBLTextureForAmbient(m_skyCube->GetTextureFilePath(), 0.1f);
 	g_camera3D->SetFar(15000.0f);
 	
 	m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
@@ -130,7 +130,6 @@ bool Game::Start()
 void Game::Update()
 {
 
-
 	if (m_isWaitFadeout) {
 		if (!m_fade->IsFade()) {
 			if (m_GameClearFlag == true) {
@@ -175,11 +174,6 @@ void Game::Update()
 	timeFont3.SetPosition(Vector3(600.0f, 300.0f, 0.0f));
 	timeFont3.SetScale(2.3f);
 	timeFont3.SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		m_shop = NewGO<Shop>(0,"shop");
-	}
 }
 
 void Game::Idle()
@@ -362,7 +356,7 @@ void Game::Battle()
 			GameClearNotice();
 		}
 
-		m_battlestartfade->StartEndFade();
+		m_battlestartfade->StartEndFadeOut();
 		m_gameState = enGameState_Idle;
 		m_gametimeFont = 15.0f;
 		return;
