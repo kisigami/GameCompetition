@@ -4,7 +4,6 @@
 class Game;
 class Enemy;
 class IceBall;
-class ExplosionBall;
 class Tower;
 
 //プレイヤー
@@ -13,9 +12,11 @@ class Player : public IGameObject
 public:
 	//プレイヤーのステート
 	enum EnPlayerState {
+		enPlayerState_FadeWait,
 		enPlayerState_Idle,
 		enPlayerState_Run,
 		enPlayerState_UseItem,
+		enPlayerState_UseHeal,
 		enPlayerState_FirstAttack,
 		enPlayerState_SecondAttack,
 		enPlayerState_ThirdAttack,
@@ -30,11 +31,7 @@ public:
 		enEquipState_Heal,
 		enEquipState_Thuner,
 	};
-	//魔法攻撃ステート
-	enum EnUseMagic {
-		enUseMagic_NormalMagic,
-		enUseMagic_PowerMagic
-	};
+
 public:
 	Player();
 	~Player();
@@ -70,12 +67,14 @@ public:
 	bool IsEnableMove() const
 	{
 		return
+			m_playerState != enPlayerState_FadeWait&&
 			m_playerState != enPlayerState_FirstAttack &&
 			m_playerState != enPlayerState_SecondAttack &&
 			m_playerState != enPlayerState_ThirdAttack &&
 			m_playerState != enPlayerState_UseItem &&
+			m_playerState != enPlayerState_UseHeal &&
 			m_playerState != enPlayerState_ReceiveDamage &&
-			m_playerState != enPlayerState_Win &&
+			m_playerState != enPlayerState_Down &&
 			m_playerState != enPlayerState_Magic;
 	}
 //private:/ 	
@@ -98,7 +97,6 @@ public:
 	void MakeThirdSlashingEffect();
 	//魔法攻撃を作成する
 	void MakeMagicBall();
-	void MakeExplosionBall();
 	//足止めアイテム（効果範囲）のエフェクト
 	void MakeRangeEffect();
 	//足止めアイテム（使用時）のエフェクト
@@ -133,9 +131,10 @@ public:
 	void ProcessMagicStateTransition();
 	//アイテム使用ステートの遷移処理
 	void ProcessUseItemStateTransition();
-
+	void ProcessFadeWaitStateTransition();
 	void ProcessWinStateTransition();
 	void ProcessDownStateTransition();
+	void ProcessHealStateTransition();
 
 	//アニメーションクリップ
 	enum EnAnimationClip {
@@ -147,6 +146,7 @@ public:
 		enAnimationClip_ThirdAttack,
 		enAnimationClip_Magic,
 		enAnimationClip_UseItem,
+		enAnimationClip_UseHeal,
 		enAnimationClip_Win,
 		enAnimationClip_Down,
 		enAnimationClip_Num
@@ -175,7 +175,6 @@ public:
 	EnPlayerState        m_playerState = enPlayerState_Idle;   //ステート
 	EnEquipState         m_equipState = enEquipState_Heal;
 	//使う魔法攻撃
-	EnUseMagic           m_UseMagic = enUseMagic_NormalMagic;
 	bool                 m_isUnderAttack = false;
 	int                  m_swordBoneId = -1;
 	float                m_hp = 100;
@@ -193,18 +192,16 @@ public:
 	
 	float battleStateTimer = 0.0f;
 
-	int Thundernum = 2;
-	int Healnum = 2;
+	int Thundernum = 1;
+	int Healnum = 1;
 	float m_alpha = 0.0f;
 	float m_alpha2 = 0.0f;
 	float m_alpha3 = 0.0f;
-	EffectEmitter* effectEmitter;
+	EffectEmitter* effectEmitter = nullptr;
 	int a = 0;
 	int b = 0;
 
-	Enemy* m_enemy;
-	Game* m_game;
-	Tower* m_tower;
-
-	int HavePoint = 0;
+	Enemy* m_enemy = nullptr;
+	Game* m_game = nullptr;
+	Tower* m_tower = nullptr;
 };

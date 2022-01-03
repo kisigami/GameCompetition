@@ -10,9 +10,6 @@
     <Filter Include="sprite">
       <UniqueIdentifier>{30c15dec-a7f7-48f1-bea6-96546ee4fa08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="item">
-      <UniqueIdentifier>{71a9cfa6-6bef-4dd4-a5ec-38fb6fa74502}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -47,24 +44,13 @@
     <ClCompile Include="Title.cpp">
       <Filter>sprite</Filter>
     </ClCompile>
-    <ClCompile Include="Stuck.cpp">
-      <Filter>item</Filter>
-    </ClCompile>
-    <ClCompile Include="Heal.cpp">
-      <Filter>item</Filter>
-    </ClCompile>
-    <ClCompile Include="LongSwordEnemy.cpp">
-      <Filter>enemy</Filter>
-    </ClCompile>
     <ClCompile Include="TwoSwordEnemy.cpp">
       <Filter>enemy</Filter>
     </ClCompile>
     <ClCompile Include="TowerUi.cpp" />
     <ClCompile Include="PlayerUi.cpp" />
-    <ClCompile Include="ExplosionBall.cpp" />
-    <ClCompile Include="GamePoint.cpp" />
-    <ClCompile Include="Shop.cpp" />
     <ClCompile Include="BattleStartFade.cpp" />
+    <ClCompile Include="HowToPlay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -98,23 +84,12 @@
     <ClInclude Include="Title.h">
       <Filter>sprite</Filter>
     </ClInclude>
-    <ClInclude Include="Stuck.h">
-      <Filter>item</Filter>
-    </ClInclude>
-    <ClInclude Include="Heal.h">
-      <Filter>item</Filter>
-    </ClInclude>
-    <ClInclude Include="LongSwordEnemy.h">
-      <Filter>enemy</Filter>
-    </ClInclude>
     <ClInclude Include="TwoSwordEnemy.h">
       <Filter>enemy</Filter>
     </ClInclude>
     <ClInclude Include="TowerUi.h" />
     <ClInclude Include="PlayerUi.h" />
-    <ClInclude Include="ExplosionBall.h" />
-    <ClInclude Include="GamePoint.h" />
-    <ClInclude Include="Shop.h" />
     <ClInclude Include="BattleStartFade.h" />
+    <ClInclude Include="HowToPlay.h" />
   </ItemGroup>
 </Project>

@@ -55,6 +55,8 @@ bool TwoSwordEnemy::Start()
 		OnAnimationEvent(clipName, eventName);
 		});
 
+	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
+
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");
 	m_game = FindGO<Game>("game");
@@ -85,7 +87,7 @@ const bool TwoSwordEnemy::IsCanPlayerAttack() const
 const bool TwoSwordEnemy::IsCanTowerAttack() const
 {
 	Vector3 diff = m_tower->GetPosition() - m_position;
-	if (diff.LengthSq() <= 600.0f * 600.0f)
+	if (diff.LengthSq() <= 800.0f * 800.0f)
 	{
 		return true;
 	}
@@ -124,7 +126,7 @@ void TwoSwordEnemy::Assult()
 	diff_tower.Normalize();
 	m_moveSpeed.x = diff_tower.x * 300.0f;
 	m_moveSpeed.z = diff_tower.z * 300.0f;
-	m_moveSpeed.y -= 10000.0f * g_gameTime->GetFrameDeltaTime();
+	m_moveSpeed.y -= 6000.0f * g_gameTime->GetFrameDeltaTime();
 	m_modelRender.SetPosition(m_position);
 	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 }
@@ -169,8 +171,8 @@ void TwoSwordEnemy::MakeQuickAttackCollision()
 	Vector3 collisionPosition = m_position;
 	collisionObject->CreateBox(collisionPosition,
 		Quaternion::Identity,
-		Vector3(120.0f, 280.0f, 20.0f));
-	collisionObject->SetName("enemy_attack");
+		Vector3(120.0f, 240.0f, 20.0f));
+	collisionObject->SetName("quick_attack");
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
 	collisionObject->SetWorldMatrix(matrix);
 }
@@ -181,8 +183,8 @@ void TwoSwordEnemy::MakeHeavyAttackCollision()
 	Vector3 collisionPosition = m_position;
 	collisionObject->CreateBox(collisionPosition,
 		Quaternion::Identity,
-		Vector3(120.0f, 500.0f, 20.0f));
-	collisionObject->SetName("enemy_attack");
+		Vector3(120.0f, 400.0f, 20.0f));
+	collisionObject->SetName("heavy_attack");
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId2)->GetWorldMatrix();
 	collisionObject->SetWorldMatrix(matrix);
 }
@@ -210,6 +212,10 @@ void TwoSwordEnemy::Collision()
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			//Hpを減らす
 			m_hp -= 1;
 			if (m_player->m_mp < 40)
@@ -220,7 +226,7 @@ void TwoSwordEnemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enEnemyState_Down;
-				m_player->HavePoint += 100;
+		
 			}
 			else
 			{
@@ -235,12 +241,17 @@ void TwoSwordEnemy::Collision()
 	{
 		if (collision->IsHit(m_charaCon))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			m_hp -= 1;
+
 			//HPが0になったら。
 			if (m_hp == 0)
 			{
 				m_enemyState = enEnemyState_Down;
-				m_player->HavePoint += 100;
+		
 			}
 			else
 			{
@@ -276,7 +287,7 @@ void TwoSwordEnemy::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
 		break;
 	case enEnemyState_Down:
-		m_modelRender.SetAnimationSpeed(1.4f);
+		m_modelRender.SetAnimationSpeed(1.7f);
 		m_modelRender.PlayAnimation(enAnimationClip_Down, 0.1f);
 		break;
 	case enEnemyState_ElectricShock:
@@ -410,7 +421,7 @@ void TwoSwordEnemy::ProcessReceiveDamageStateTransition()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		if (electricshocktimer < 5.0f)
+		if (electricshocktimer < 3.0f)
 		{
 			m_enemyState = enEnemyState_ElectricShock;
 			return;
@@ -443,7 +454,7 @@ void TwoSwordEnemy::ProcessElectricShockStateTransition()
 	if (electricshocktimer <= 0.0f)
 	{
 		ProcessCommonStateTransition();
-		electricshocktimer = 5.0f;
+		electricshocktimer = 3.0f;
 		return;
 	}
 }

@@ -5,11 +5,8 @@
 #include "Player.h"
 #include "Tower.h"
 
-#include "GamePoint.h"
-
 #include "collision/CollisionObject.h"
 #include "graphics/effect/EffectEmitter.h"
-
 
 Enemy::Enemy()
 {
@@ -45,9 +42,7 @@ bool Enemy::Start()
 	);
 
 	EffectEngine::GetInstance()->ResistEffect(11, u"Assets/efk/enemydamage.efk");
-
-	//m_modelRender.SetTRS(m_position, m_rotation, m_scale);
-	//m_modelRender.Update();
+	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
 
 	//キャラクターコントローラー
 	m_charaCon.Init(
@@ -155,6 +150,10 @@ void Enemy::Collision()
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			//Hpを減らす
 			m_hp -= 1;
 			MakeDamageEffect();
@@ -166,7 +165,6 @@ void Enemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enEnemyState_Down;
-				m_player->HavePoint += 100;
 			}
 			else
 			{
@@ -181,31 +179,16 @@ void Enemy::Collision()
 	{
 		if (collision->IsHit(m_charaCon))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			m_hp -= 1;
 			MakeDamageEffect();
 			//HPが0になったら。
 			if (m_hp == 0)
 			{
 				m_enemyState = enEnemyState_Down;
-				m_player->HavePoint += 100;
-			}
-			else
-			{
-				m_enemyState = enEnemyState_ReceiveDamage;
-			}
-		}
-	}
-
-	const auto& collisions4 = g_collisionObjectManager->FindCollisionObjects("explosion_magic");
-	for (auto collision : collisions4)
-	{
-		if (collision->IsHit(m_charaCon))
-		{
-			m_hp -= 2;
-			if (m_hp <= 0)
-			{
-				m_enemyState = enEnemyState_Down;
-				m_player->HavePoint += 100;
 			}
 			else
 			{
@@ -282,7 +265,7 @@ const bool Enemy::IsCanTowerAttack() const
 const bool Enemy::IsCanPlayerAttack() const
 {
 	Vector3 diff = m_player->GetPosition() - m_position;
-	if (diff.LengthSq() <= 500.0f * 500.0f)
+	if (diff.LengthSq() <= 400.0f * 400.0f)
 	{
 		return true;
 	}
@@ -365,7 +348,7 @@ void Enemy::ProcessCommonStateTransition()
 			diff_player.Normalize();
 			m_moveSpeed = diff_player * 300.0f;
 			int ram = rand() % 100;
-			if (ram > 30)
+			if (ram > 50)
 			{
 				//攻撃
 				m_enemyState = enEnemyState_Attack;
@@ -384,7 +367,7 @@ void Enemy::ProcessCommonStateTransition()
 			diff_tower.Normalize();
 			m_moveSpeed = diff_tower * 300.0f;
 			ram = rand() % 100;
-			if (ram > 30)
+			if (ram > 50)
 			{
 				//攻撃
 				m_enemyState = enEnemyState_Attack;

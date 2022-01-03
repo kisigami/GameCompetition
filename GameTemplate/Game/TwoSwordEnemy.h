@@ -106,7 +106,7 @@ public:
 	int m_swordBoneId2 = -2;
 	int    m_hp = 6;
 	int ram;
-	float electricshocktimer = 5.0f;
+	float electricshocktimer = 3.0f;
 	EffectEmitter m_effectemitter;
 	int TwoSwordEnemynum = 1;
 	Game* m_game = nullptr;

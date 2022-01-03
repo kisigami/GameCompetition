@@ -107,7 +107,8 @@ public:
 	bool IsEnableMove() const
 	{
 		//UŒ‚‚ÍˆÚ“®‚µ‚È‚¢
-		return m_enemyState != enMagicEnemyState_Attack &&
+		return
+			m_enemyState != enMagicEnemyState_Attack &&
 			m_enemyState != enMagicEnemyState_ReceiveDamage &&
 			m_enemyState != enMagicEnemyState_ElectricShock &&
 			m_enemyState != enMagicEnemyState_Down;

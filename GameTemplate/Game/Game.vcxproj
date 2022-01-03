@@ -154,27 +154,22 @@
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="BattleStartFade.cpp" />
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="ExplosionBall.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="GamePoint.cpp" />
-    <ClCompile Include="Heal.cpp" />
+    <ClCompile Include="HowToPlay.cpp" />
     <ClCompile Include="IceBall.cpp" />
-    <ClCompile Include="LongSwordEnemy.cpp" />
     <ClCompile Include="MagicEnemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerAttackEnemy.cpp" />
     <ClCompile Include="PlayerUi.cpp" />
-    <ClCompile Include="Shop.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Stuck.cpp" />
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tower.cpp" />
@@ -185,23 +180,18 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="BattleStartFade.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="ExplosionBall.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
-    <ClInclude Include="GamePoint.h" />
-    <ClInclude Include="Heal.h" />
+    <ClInclude Include="HowToPlay.h" />
     <ClInclude Include="IceBall.h" />
-    <ClInclude Include="LongSwordEnemy.h" />
     <ClInclude Include="MagicEnemy.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerAttackEnemy.h" />
     <ClInclude Include="PlayerUi.h" />
-    <ClInclude Include="Shop.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Stuck.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tower.h" />

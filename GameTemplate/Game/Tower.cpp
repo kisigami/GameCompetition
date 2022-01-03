@@ -111,6 +111,48 @@ void Tower::Collision()
 			}
 		}
 	}
+
+	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("quick_attack");
+	for (auto collision : collisions3)
+	{
+		//コリジョンとキャラコンが衝突したら
+		if (collision->IsHit(m_charaCon))
+		{
+			//Hpを減らす
+			m_hp -= 15;
+			if (m_hp <= 0) {
+				m_game->GameOverNotice();
+				TowerBreak = true;
+				return;
+			}
+			else
+			{
+				m_towerState = enTowerState_DamageInvalid;
+				return;
+			}
+		}
+	}
+
+	const auto& collisions4 = g_collisionObjectManager->FindCollisionObjects("heavy_attack");
+	for (auto collision : collisions4)
+	{
+		//コリジョンとキャラコンが衝突したら
+		if (collision->IsHit(m_charaCon))
+		{
+			//Hpを減らす
+			m_hp -= 15;
+			if (m_hp <= 0) {
+				m_game->GameOverNotice();
+				TowerBreak = true;
+				return;
+			}
+			else
+			{
+				m_towerState = enTowerState_DamageInvalid;
+				return;
+			}
+		}
+	}
 }
 
 void Tower::BreakEffect()

@@ -22,7 +22,6 @@ MagicEnemy::~MagicEnemy()
 bool MagicEnemy::Start()
 {
 	//アニメーションの読み込み
-	//待機
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/magic/idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Assult].Load("Assets/animData/magic/run.tka");
@@ -55,6 +54,9 @@ bool MagicEnemy::Start()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+
+	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
+
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");
 	m_game = FindGO<Game>("game");
@@ -70,6 +72,7 @@ void MagicEnemy::Update()
 	Rotation();
 	PlayAnimation();
 	ManageState();
+
 	m_modelRender.Update();
 }
 
@@ -129,6 +132,10 @@ void MagicEnemy::Collision()
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			//Hpを減らす
 			m_hp -= 1;
 			MakeDamageEffect();
@@ -142,7 +149,6 @@ void MagicEnemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enMagicEnemyState_Down;
-				m_player->HavePoint += 100;
 			}
 			//０以外なら
 			else
@@ -159,13 +165,16 @@ void MagicEnemy::Collision()
 		{
 			if (collision->IsHit(m_charaCon))
 			{
-
+				SoundSource* m_se = NewGO<SoundSource>(0);
+				m_se->Init(32);
+				m_se->SetVolume(0.3f);
+				m_se->Play(false);
 				m_hp -= 1;
 				//HPが0になったら。
 				if (m_hp == 0)
 				{
 					m_enemyState = enMagicEnemyState_Down;
-					m_player->HavePoint += 100;
+			
 				}
 				else {
 
@@ -252,9 +261,11 @@ const bool MagicEnemy::IsCanTowerAttack() const
 const bool MagicEnemy::IsCanPlayerAttack() const
 {
 	Vector3 diff = m_player->GetPosition() - m_position;
-	if (diff.LengthSq() <= 1000.0f * 1000.0f)
+	if (diff.LengthSq() <= 500.0f * 500.0f)
 	{
-		return true;
+		if (m_position.y <= 100.0f) {
+			return true;
+		}
 	}
 	return false;
 }

@@ -12,12 +12,11 @@ class Fade;
 class GameOver;
 class GameClear;
 class MagicEnemy;
-class LongSwordEnemy;
 class TwoSwordEnemy;
 class TowerUi;
 class PlayerUi;
-class Shop;
 class BattleStartFade;
+class HowToPlay;
 
 class Game : public IGameObject
 {
@@ -43,7 +42,7 @@ public:
 	void GameOverNotice();
 	void GameClearNotice();
 	void Render(RenderContext& rc);
-	void ProcessCommonStateTransition();
+
 	void Idle();
 	void Battle();
 
@@ -66,6 +65,10 @@ public:
 	FontRender           timeFont1;
 	FontRender           timeFont2;
 	FontRender           timeFont3;
+	FontRender           idlefont;
+	SpriteRender         round;
+	SpriteRender         enemynum;
+	SpriteRender         buttom;       
 	SoundSource*         m_bgm = nullptr;
 	Player*              m_player = nullptr;
 	Background*          m_background = nullptr;
@@ -80,13 +83,13 @@ public:
 	Enemy*               m_enemy = nullptr;
 	PlayerAttackEnemy*   m_playerattackenemy = nullptr;
 	MagicEnemy*          m_magicenemy = nullptr;
-	LongSwordEnemy*      m_longswordenemy = nullptr;
 	TwoSwordEnemy*       m_twoswordenemy = nullptr;
-	Shop*                m_shop = nullptr;
 	BattleStartFade*     m_battlestartfade = nullptr;
+	HowToPlay*           m_howtoplay = nullptr;
 
 	bool                 m_isWaitFadeout = false;
 	bool                 m_isWaitBattleFadeout = false;
+	bool                 m_isBattleStartFade = false;
 
 	int m_AllEnemynum = 0;
 	int m_DeadEnemynum = 0;
@@ -94,8 +97,9 @@ public:
 	bool m_GameClearFlag = false;
 	bool m_GameOverFlag = false;
 
-	float  m_battletime = 0.0f;
-	float  m_gametimeFont = 5.0f;
+
+	float  m_battletime = 1.0f;
+	float  m_gametimeFont = 8.0f;
 
 	EnGameState m_gameState = enGameState_Idle;
 	EnWaveState m_waveState = enWaveState_0;

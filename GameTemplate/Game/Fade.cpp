@@ -25,7 +25,7 @@ void Fade::Update()
 	switch (m_state) {
 		//フェードイン
 	case enState_FadeIn:
-		m_currentAlpha -= 1.0f * g_gameTime->GetFrameDeltaTime();
+		m_currentAlpha -= 0.8f * g_gameTime->GetFrameDeltaTime();
 		if (m_currentAlpha <= 0.0f) {
 			m_currentAlpha = 0.0f;
 			m_state = enState_Idle;
@@ -33,7 +33,7 @@ void Fade::Update()
 		break;
 		//フェードアウト
 	case enState_FadeOut:
-		m_currentAlpha += 1.0f * g_gameTime->GetFrameDeltaTime();
+		m_currentAlpha += 0.8f * g_gameTime->GetFrameDeltaTime();
 		if (m_currentAlpha >= 1.0f) {
 			m_currentAlpha = 1.0f;
 			m_state = enState_Idle;

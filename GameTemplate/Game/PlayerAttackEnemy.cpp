@@ -60,6 +60,8 @@ bool PlayerAttackEnemy::Start()
 		OnAnimationEvent(clipName, eventName);
 		});
 
+	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
+
 	m_player = FindGO<Player>("player");
 	m_game = FindGO<Game>("game");
 	return true;
@@ -148,6 +150,10 @@ void PlayerAttackEnemy::Collision()
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			//Hpを減らす
 			m_hp -= 1;
 			MakeDamageEffect();
@@ -160,7 +166,6 @@ void PlayerAttackEnemy::Collision()
 			{
 				//ダウンステートへ
 				m_enemyState = enPlayerAttackEnemyState_Down;
-				m_player->HavePoint += 100;
 			}
 			//０以外なら
 			else
@@ -177,13 +182,17 @@ void PlayerAttackEnemy::Collision()
 		{
 			if (collision->IsHit(m_charaCon))
 			{
+				SoundSource* m_se = NewGO<SoundSource>(0);
+				m_se->Init(32);
+				m_se->SetVolume(0.3f);
+				m_se->Play(false);
 
 				m_hp -= 1;
 				//HPが0になったら。
 				if (m_hp == 0)
 				{
 					m_enemyState = enPlayerAttackEnemyState_Down;
-					m_player->HavePoint += 100;
+				
 				}
 				else {
 

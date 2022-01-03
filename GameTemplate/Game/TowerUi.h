@@ -17,6 +17,7 @@ public:
 	SpriteRender TowerHpwaku;
 	SpriteRender TowerMidori;
 	SpriteRender TowerHpButtom;
+	SpriteRender TowerFont;
 	Tower* m_tower = nullptr;
 	float towerhpscale = 1.0f;
 };

@@ -5,10 +5,6 @@
 #include "Enemy.h"
 
 #include "IceBall.h"
-#include "ExplosionBall.h"
-
-#include "Stuck.h"
-#include "Heal.h"
 #include "Tower.h"
 
 #include "collision/CollisionObject.h"
@@ -46,11 +42,8 @@ bool Player::Start()
 	m_animationClips[enAnimationClip_Magic].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_Win].Load("Assets/animData/win.tka");
-	m_animationClips[enAnimationClip_Win].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Down].Load("Assets/animData/down.tka");
-	m_animationClips[enAnimationClip_Down].SetLoopFlag(false);
-	
+	m_animationClips[enAnimationClip_UseHeal].Load("Assets/animData/heal.tka");
+	m_animationClips[enAnimationClip_UseHeal].SetLoopFlag(false);
 	//モデルを読み込む
 	m_modelRender.Init("Assets/modelData/player/player4.tkm"
 		,m_animationClips, enAnimationClip_Num
@@ -94,12 +87,19 @@ bool Player::Start()
 	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/efk/slash3.efk");
 	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/efk/item.efk");
 	EffectEngine::GetInstance()->ResistEffect(4, u"Assets/efk/use_item_thunder.efk");
+	EffectEngine::GetInstance()->ResistEffect(5, u"Assets/efk/heal.efk");
 
 	//各サウンドを読み込む
 	g_soundEngine->ResistWaveFileBank(0, "Assets/sound/swordfuriorosi.wav");
 	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/sword2.wav");
 	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/sword3.wav");
 	g_soundEngine->ResistWaveFileBank(4, "Assets/sound/playerreact.wav");
+	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/kaminari.wav");
+	g_soundEngine->ResistWaveFileBank(8, "Assets/sound/heal.wav");
+	g_soundEngine->ResistWaveFileBank(31, "Assets/sound/playerdamage.wav");
+	g_soundEngine->ResistWaveFileBank(33, "Assets/sound/errer.wav");
+	g_soundEngine->ResistWaveFileBank(29, "Assets/sound/sentaku.wav");
+	g_soundEngine->ResistWaveFileBank(30, "Assets/sound/kettei.wav");
 
 	m_enemy = FindGO<Enemy>("enemy");
 	m_tower = FindGO<Tower>("tower");
@@ -113,6 +113,7 @@ void Player::Update()
 	{
 		m_mp = 40;
 	}
+
 	Hit();
 	//移動処理
 	Move();
@@ -184,7 +185,7 @@ void Player::Hit()
 	{
 		m_attackTimer2 += g_gameTime->GetFrameDeltaTime() * 50.0f;
 
-		if (m_attackTimer2 > 0.001f && m_attackTimer2 <= 8.0f)
+		if (m_attackTimer2 > 0.001f && m_attackTimer2 <= 10.0f)
 		{
 			Type = 2;
 		}
@@ -251,7 +252,8 @@ void Player::Rotation()
 void Player::Collision()
 {
 	//被ダメージステートなら
-	if (m_playerState == enPlayerState_ReceiveDamage)
+	if (m_playerState == enPlayerState_ReceiveDamage || m_playerState == enPlayerState_Down 
+		|| m_playerState == enPlayerState_UseItem || m_playerState == enPlayerState_UseHeal)
 	{
 		//ダメージ判定をしない
 		return;
@@ -263,19 +265,13 @@ void Player::Collision()
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
-			//HPを減らす
-			m_hp -= 10;
-			//HPが0なら
-			if (m_hp == 0)
-			{
-
-			}
-			//HPが0ではなかったら
-			else {
-				//被ダメージステートに移行する
-				m_playerState = enPlayerState_ReceiveDamage;
-				//SEを再生する
-			}
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(31);
+			m_se->SetVolume(0.2f);
+			m_se->Play(false);
+			//被ダメージステートに移行する
+			m_playerState = enPlayerState_ReceiveDamage;
+			//SEを再生する
 		}
 	}
 	//敵の魔法攻撃のコリジョンを取得する
@@ -286,29 +282,44 @@ void Player::Collision()
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
-			//Hpを減らす
-			m_hp -= 10;
-			if (m_hp == 0)
-			{
-
-			}
-			//HPが0ではなかったら。
-			else {
-				//被ダメージリステートに移行する
-				m_playerState = enPlayerState_ReceiveDamage;
-			}
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(31);
+			m_se->SetVolume(0.2f);
+			m_se->Play(false);
+			//被ダメージリステートに移行する
+			m_playerState = enPlayerState_ReceiveDamage;
 		}
 	}
 
-	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("enemy_point");
+	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("heavy_attack");
 	//配列をfor文で回す
 	for (auto collision : collisions3)
 	{
 		//コリジョンとキャラコンが衝突したら
 		if (collision->IsHit(m_charaCon))
 		{
-			HavePoint += 100;
-			DeleteGO(collision);
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(31);
+			m_se->SetVolume(0.2f);
+			m_se->Play(false);
+			//被ダメージリステートに移行する
+			m_playerState = enPlayerState_ReceiveDamage;
+		}
+	}
+
+	const auto& collisions4 = g_collisionObjectManager->FindCollisionObjects("quick_attack");
+	//配列をfor文で回す
+	for (auto collision : collisions4)
+	{
+		//コリジョンとキャラコンが衝突したら
+		if (collision->IsHit(m_charaCon))
+		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(31);
+			m_se->SetVolume(0.2f);
+			m_se->Play(false);
+			//被ダメージリステートに移行する
+			m_playerState = enPlayerState_ReceiveDamage;
 		}
 	}
 }
@@ -341,7 +352,7 @@ void Player::MakeAttackCollision()
 	//ボックス状のコリジョンを作成する
 	collisionObject->CreateBox(collisionPosition,
 		Quaternion::Identity,
-		Vector3(20.0f, 220.0f, 20.0f));
+		Vector3(10.0f, 200.0f, 10.0f));
 	//剣のボーンのワールド行列を取得する
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
 	//剣のボーンのワールド行列をコリジョンに適用させる
@@ -443,6 +454,10 @@ void Player::ChoiseItem()
 		m_fontRender2.SetColor(Vector4(0.0f, 0.0f, 0.0f, 0.0f));
 		if (g_pad[0]->IsTrigger(enButtonRight) || g_pad[0]->IsTrigger(enButtonLeft))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(29);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			m_equipState = enEquipState_Thuner;
 			return;
 		}
@@ -454,6 +469,10 @@ void Player::ChoiseItem()
 		m_fontRender2.SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 		if (g_pad[0]->IsTrigger(enButtonRight) || g_pad[0]->IsTrigger(enButtonLeft))
 		{
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(29);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			m_equipState = enEquipState_Heal;
 			return;
 		}
@@ -472,15 +491,6 @@ void Player::MakeMagicBall()
 	iceBall->SetEnUser(IceBall::enUser_Player);
 }
 
-void Player::MakeExplosionBall()
-{
-	ExplosionBall* explosionBall = NewGO<ExplosionBall>(0);
-	Vector3 explosionBallPosition = m_position;
-	explosionBallPosition.y += 55.0f;
-	explosionBallPosition += m_forward * 300.0f;
-	explosionBall->SetPosition(explosionBallPosition);
-	explosionBall->SetRotation(m_rotation);
-}
 void Player::MakeRangeEffect()
 {
 	//エフェクトを作成する
@@ -505,6 +515,7 @@ void Player::MakeEnemyStopCollision()
 		Quaternion::Identity,
 		650.0f);
 	m_collisionObject->SetName("item_thunder");
+	Thundernum -= 1;
 }
 
 void Player::MakeEnemyStopEffect()
@@ -516,16 +527,30 @@ void Player::MakeEnemyStopEffect()
 	effectEmitter->SetPosition(m_position);
 	//エフェクトを再生する
 	effectEmitter->Play();
+	SoundSource* m_se = NewGO<SoundSource>(0);
+	m_se->Init(7);
+	m_se->SetVolume(0.3f);
+	m_se->Play(false);
 }
 
 void Player::ProcessCommonStateTransition()
 {
+
 	if (m_tower->m_hp <= 0)
 	{
 		m_playerState = enPlayerState_Down;
 		return;
 	}
-
+	if (m_hp <= 0)
+	{
+		m_playerState = enPlayerState_Down;
+		return;
+	}
+	if (m_game->m_isBattleStartFade == true)
+	{
+		m_playerState = enPlayerState_FadeWait;
+		return;
+	}
 	//RBボタンが押される&攻撃タイプが0なら
 	if (g_pad[0]->IsTrigger(enButtonRB2) && Type == 0)
 	{
@@ -563,24 +588,39 @@ void Player::ProcessCommonStateTransition()
 		//アイテム使用ステートに移行する
 		m_playerState = enPlayerState_UseItem;
 		a = 0;
-		Thundernum -= 1;
 		return;
 	}
+
 
 	//RB1ボタンとLB1ボタンが押されたら＆アイテムステートが回復なら
 	if (g_pad[0]->IsTrigger(enButtonRB1) && g_pad[0]->IsTrigger(enButtonLB1)
 		&& m_equipState == enEquipState_Heal && Healnum >= 1)
 	{
-		if (m_tower->m_hp < 200.0f) {
+		if (m_tower->m_hp < 200.0f)
+		{
+			EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+			effectEmitter->Init(5);
+			effectEmitter->SetScale(Vector3::One * 5.0f);
+			Vector3 effectPosition = m_tower->m_position;
+			m_tower->m_position.y -= 10.0f;
+			effectEmitter->SetPosition(m_tower->m_position);
+			effectEmitter->Play();
+
+			m_playerState = enPlayerState_UseHeal;
 			Healnum -= 1;
 			m_tower->m_hp += 30.0f;
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(8);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
 			if (m_tower->m_hp > 200)
 			{
 				m_tower->m_hp = 200.0f;
 			}
 		}
+		return;
 	}
-
+	
 	//LB2ボタンが押されたら
 	if (m_mp >= 10)
 	{
@@ -678,7 +718,13 @@ void Player::ProcessUseItemStateTransition()
 		ProcessCommonStateTransition();
 	}
 }
-
+void  Player::ProcessFadeWaitStateTransition()
+{
+	if (m_game->m_isWaitBattleFadeout == false)
+	{
+		ProcessCommonStateTransition();
+	}
+}
 void Player::ProcessWinStateTransition()
 {
 	if (g_pad[0]->IsTrigger(enButtonA))
@@ -691,12 +737,17 @@ void Player::ProcessDownStateTransition()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//ステートを遷移する
-		ProcessCommonStateTransition();
 		m_game->GameOverNotice();
 	}
 }
-
+void Player::ProcessHealStateTransition()
+{
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//ステートを遷移する
+		ProcessCommonStateTransition();
+	}
+}
 void Player::ManageState()
 {
 	switch (m_playerState)
@@ -740,6 +791,14 @@ void Player::ManageState()
 	case enPlayerState_UseItem:
 		//アイテム使用ステートのステート遷移処理
 		ProcessUseItemStateTransition();
+		break;
+	case enPlayerState_UseHeal:
+		//アイテム使用ステートのステート遷移処理
+		ProcessHealStateTransition();
+		break;
+	case enPlayerState_FadeWait:
+		//アイテム使用ステートのステート遷移処理
+		ProcessFadeWaitStateTransition();
 		break;
 	case enPlayerState_Win:
 		ProcessWinStateTransition();
@@ -785,7 +844,7 @@ void Player::PlayAnimation()
 		break;
 	//攻撃3ステートの時
 	case enPlayerState_ThirdAttack:
-		m_modelRender.SetAnimationSpeed(1.6f);
+		m_modelRender.SetAnimationSpeed(1.7f);
 		//攻撃3アニメーションを再生する
 		m_modelRender.PlayAnimation(enAnimationClip_ThirdAttack, 0.3f);
 		break;
@@ -801,13 +860,14 @@ void Player::PlayAnimation()
 		//アイテム使用アニメーションを再生する
 		m_modelRender.PlayAnimation(enAnimationClip_UseItem, 0.5f);
 		break;
-	case enPlayerState_Win:
-		m_modelRender.SetAnimationSpeed(1.0f);
-		m_modelRender.PlayAnimation(enAnimationClip_Win, 0.5f);
+	case enPlayerState_FadeWait:
+		m_modelRender.SetAnimationSpeed(2.0f);
+		//待機アニメーションを再生する
+		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.3f);
 		break;
-	case enPlayerState_Down:
-		m_modelRender.SetAnimationSpeed(1.0f);
-		m_modelRender.PlayAnimation(enAnimationClip_Down, 0.5f);
+	case enPlayerState_UseHeal:
+		m_modelRender.SetAnimationSpeed(1.8f);
+		m_modelRender.PlayAnimation(enAnimationClip_UseHeal, 0.5f);
 		break;
 	default:
 		break;
@@ -851,30 +911,17 @@ void Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 	else if (wcscmp(eventName, L"magic_attack") == 0)
 	{
 		m_mp -= 10;
-		switch (m_UseMagic)
-		{
-		case Player::enUseMagic_NormalMagic:
-			MakeMagicBall();
-			break;
-		case Player::enUseMagic_PowerMagic:
-			MakeExplosionBall();
-			break;
-		default:
-			break;
-		}
+		MakeMagicBall();
 	}
 	//キーの名前が「thunder3」なら
 	if (wcscmp(eventName, L"useitem") == 0)
 	{
 		//コリジョンを作成する＆エフェクトを再生する
 		MakeEnemyStopEffect();
-
-	}
-	if (wcscmp(eventName, L"collision") == 0)
-	{
 		MakeEnemyStopCollision();
 
 	}
+
 }
 
 void Player::Render(RenderContext& rc)
@@ -891,7 +938,7 @@ void Player::Render(RenderContext& rc)
 		break;
 	case Player::enEquipState_Thuner:
 		m_itemStop.Draw(rc);
-		break;
+	break;
 	}
 	m_fontRender1.Draw(rc);
 	m_fontRender2.Draw(rc);
