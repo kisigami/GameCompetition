@@ -178,7 +178,7 @@ public:
 	bool                 m_isUnderAttack = false;
 	int                  m_swordBoneId = -1;
 	float                m_hp = 100;
-	float               m_mp = 40;
+	float               m_mp = 20;
 	//0=一撃目　1=2撃目  2=3撃目
 	int Type = 0;
 	//0=タイマー停止　1=タイマー起動

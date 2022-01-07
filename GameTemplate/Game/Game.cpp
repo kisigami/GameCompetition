@@ -486,7 +486,7 @@ void Game::Battle()
 		}
 		else
 		{
-			GameClearNotice();
+			//GameClearNotice();
 		}
 	}
 }

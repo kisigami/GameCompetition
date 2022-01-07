@@ -24,7 +24,7 @@ bool Tower::Start()
 	EffectEngine::GetInstance()->ResistEffect(8, u"Assets/efk/Smoke.efk");
 	EffectEngine::GetInstance()->ResistEffect(9, u"Assets/efk/towereffect.efk");
 	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/towerbreak.wav");
-
+	g_soundEngine->ResistWaveFileBank(44, "Assets/sound/towerdamage.wav");
 	m_modelRender.Init("Assets/modelData/tower2/tower2.tkm");
 	m_modelRender.SetPosition(m_position);
 	//ëÂÇ´Ç≥Çê›íËÇ∑ÇÈÅB
@@ -56,7 +56,7 @@ bool Tower::Start()
 		300.0f,
 		m_position
 	);
-	TowerEffect();
+	//TowerEffect();
 	m_enemy = FindGO<Enemy>("enemy");
 	m_game = FindGO<Game>("game");
 
@@ -86,6 +86,10 @@ void Tower::Collision()
 			}
 			else
 			{
+				SoundSource* m_se = NewGO<SoundSource>(0);
+				m_se->Init(44);
+				m_se->SetVolume(0.4f);
+				m_se->Play(false);
 				m_towerState = enTowerState_DamageInvalid;
 				return;
 			}
@@ -106,6 +110,10 @@ void Tower::Collision()
 			}
 			else
 			{
+				SoundSource* m_se = NewGO<SoundSource>(0);
+				m_se->Init(44);
+				m_se->SetVolume(0.4f);
+				m_se->Play(false);
 				m_towerState = enTowerState_DamageInvalid;
 				return;
 			}
@@ -127,6 +135,10 @@ void Tower::Collision()
 			}
 			else
 			{
+				SoundSource* m_se = NewGO<SoundSource>(0);
+				m_se->Init(44);
+				m_se->SetVolume(0.4f);
+				m_se->Play(false);
 				m_towerState = enTowerState_DamageInvalid;
 				return;
 			}
@@ -148,6 +160,10 @@ void Tower::Collision()
 			}
 			else
 			{
+				SoundSource* m_se = NewGO<SoundSource>(0);
+				m_se->Init(44);
+				m_se->SetVolume(0.4f);
+				m_se->Play(false);
 				m_towerState = enTowerState_DamageInvalid;
 				return;
 			}

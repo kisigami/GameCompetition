@@ -444,8 +444,9 @@ void TwoSwordEnemy::ProcessDownTransition()
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		DeleteGO(this);
 		m_game->m_DeadEnemynum++;
+		m_game->GameClearNotice();
+		DeleteGO(this);
 		return;
 	}
 }

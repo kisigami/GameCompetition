@@ -48,7 +48,7 @@ public:
 		m_rotation = rotation;
 	}
 
-	float m_hp = 200.0f;
+	float m_hp = 130.0f;
 
 
 	CollisionObject m_collisionObject;
