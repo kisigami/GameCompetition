@@ -9,6 +9,15 @@
 #include "collision/CollisionObject.h"
 #include "graphics/effect/EffectEmitter.h"
 
+namespace
+{
+	const float GRAVITY = 6000.0f;               //重力
+	const float MOVE_SPEED = 300.0f;             //移動速度
+	const float TOWER_ATTACK_RANGE = 1000.0f;     //タワーを攻撃できる距離
+	const float PLAYER_ATTACK_RANGE = 500.0f;    //プレイヤーを攻撃できる距離
+	const float RESTRAINT_TIME = 8.0f;           //拘束時間
+}
+
 MagicEnemy::MagicEnemy()
 {
 
@@ -24,16 +33,16 @@ bool MagicEnemy::Start()
 	//アニメーションの読み込み
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/magic/idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_Assult].Load("Assets/animData/magic/run.tka");
-	m_animationClips[enAnimationClip_Assult].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Assault].Load("Assets/animData/magic/run.tka");
+	m_animationClips[enAnimationClip_Assault].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/magic/attack.tka");
 	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_ReceiveDamage].Load("Assets/animData/magic/damage.tka");
 	m_animationClips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Down].Load("Assets/animData/magic/down.tka");
 	m_animationClips[enAnimationClip_Down].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_ElectricShock].Load("Assets/animData/magic/eletric.tka");
-	m_animationClips[enAnimationClip_ElectricShock].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_ReceiveRestraint].Load("Assets/animData/magic/eletric.tka");
+	m_animationClips[enAnimationClip_ReceiveRestraint].SetLoopFlag(false);
 
 	//モデルの読み込み
 	m_modelRender.Init("Assets/modelData/enemy/magic/magicenemy.tkm",
@@ -41,9 +50,8 @@ bool MagicEnemy::Start()
 		enAnimationClip_Num,
 		enModelUpAxisZ
 	);
-
+	//座標、回転、大きさの更新
 	m_modelRender.SetTRS(m_position, m_rotation, m_scale);
-	m_modelRender.Update();
 
 	//キャラクターコントローラー
 	m_charaCon.Init(
@@ -51,166 +59,62 @@ bool MagicEnemy::Start()
 		200.0f,			//高さ
 		m_position      //座標
 	);
+
+	//アニメーションイベント用の関数を設定する
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
 
+	//SEの読み込み
 	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
 
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");
 	m_game = FindGO<Game>("game");
-
 	return true;
 }
 
 void MagicEnemy::Update()
 {
-	Electric();
-	Assult();
-	Collision();
+	//移動処理
+	Move();
+	//回転処理
 	Rotation();
+	//当たり判定の処理
+	Collision();
+	//拘束処理
+	Restraint();
+	//アニメーションの再生
 	PlayAnimation();
+	//ステートの遷移処理
 	ManageState();
 
+	//モデルの更新
 	m_modelRender.Update();
 }
 
-void MagicEnemy::Electric()
-{
-	if (m_enemyState != enMagicEnemyState_ElectricShock)
-	{
-		return;
-	}
-	electrictimer -= g_gameTime->GetFrameDeltaTime();
-}
-
-void MagicEnemy::MakeMagicBall()
-{
-	IceBall* iceBall = NewGO<IceBall>(0);
-	Vector3 iceBallPosition = m_position;
-	iceBallPosition.y += 55.0f;
-	iceBallPosition += m_forward * 300.0f;
-	iceBall->SetPosition(iceBallPosition);
-	iceBall->SetRotation(m_rotation);
-	iceBall->SetEnUser(IceBall::enUser_Enemy);
-}
-void MagicEnemy::MakeDamageEffect()
-{
-	EffectEmitter* m_effectEmitter;
-	m_effectEmitter = NewGO<EffectEmitter>(0);
-	Vector3 EffectPosition = m_position;
-	EffectPosition.y += 180.0f;
-	Vector3 EffectScale = m_scale;
-	m_effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
-	m_effectEmitter->SetPosition(EffectPosition);
-	m_effectEmitter->SetRotation(m_rotation);
-	m_effectEmitter->Init(11);
-	m_effectEmitter->Play();
-}
-
-void MagicEnemy::Collision()
-{
-	if (m_enemyState == enMagicEnemyState_ReceiveDamage ||
-		m_enemyState == enMagicEnemyState_Down)
-	{
-		return;
-	}
-
-	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("item_thunder");
-	for (auto collision : collisions3)
-	{
-		if (collision->IsHit(m_charaCon))
-		{
-			m_enemyState = enMagicEnemyState_ElectricShock;
-		}
-	}
-
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
-	for (auto collision : collisions)
-	{
-		//コリジョンとキャラコンが衝突したら
-		if (collision->IsHit(m_charaCon))
-		{
-			SoundSource* m_se = NewGO<SoundSource>(0);
-			m_se->Init(32);
-			m_se->SetVolume(0.3f);
-			m_se->Play(false);
-			//Hpを減らす
-			m_hp -= 1;
-			MakeDamageEffect();
-			if (m_player->m_mp < 40)
-			{
-				m_player->m_mp += 10;
-			}
-
-			//もし０なら
-			if (m_hp <= 0)
-			{
-				//ダウンステートへ
-				m_enemyState = enMagicEnemyState_Down;
-			}
-			//０以外なら
-			else
-			{
-				//被ダメージステートへ
-				m_enemyState = enMagicEnemyState_ReceiveDamage;
-			}
-		}
-	}
-
-	{
-		const auto& collisions2 = g_collisionObjectManager->FindCollisionObjects("player_magic");
-		for (auto collision : collisions2)
-		{
-			if (collision->IsHit(m_charaCon))
-			{
-				SoundSource* m_se = NewGO<SoundSource>(0);
-				m_se->Init(32);
-				m_se->SetVolume(0.3f);
-				m_se->Play(false);
-				m_hp -= 1;
-				//HPが0になったら。
-				if (m_hp == 0)
-				{
-					m_enemyState = enMagicEnemyState_Down;
-			
-				}
-				else {
-
-					m_enemyState = enMagicEnemyState_ReceiveDamage;
-				}
-				return;
-			}
-		}
-	}
-}
-
-
-void MagicEnemy::Assult()
+void MagicEnemy::Move()
 {
 	//突撃ステートではなかったら
-	if (m_enemyState != enMagicEnemyState_Assult)
+	if (m_magicenemyState != enMagicEnemyState_Assault)
 	{
 		//何もしない
 		return;
 	}
 
-	m_moveSpeed.y -= 10000.0f * g_gameTime->GetFrameDeltaTime();
+	//重力
+	m_moveSpeed.y -= GRAVITY * g_gameTime->GetFrameDeltaTime();
 
-	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる
-	modelPosition.y += 2.5f;
-
-
-	//塔へ進む
+	//タワーへの移動処理
 	Vector3 diff = m_tower->GetPosition() - m_position;
 	diff.Normalize();
-	m_moveSpeed.x = diff.x * 300.0f;
-	m_moveSpeed.z = diff.z * 300.0f;	
-	
-	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	//移動速度
+	m_moveSpeed.x = diff.x * MOVE_SPEED;
+	m_moveSpeed.z = diff.z * MOVE_SPEED;
+
+	//座標の更新
 	m_modelRender.SetPosition(m_position);
+	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 }
 
 void MagicEnemy::Rotation()
@@ -229,75 +133,182 @@ void MagicEnemy::Rotation()
 	m_rotation.Apply(m_forward);
 }
 
-const bool MagicEnemy::SearchPlayer() const
+void MagicEnemy::MakeMagicBall()
 {
-	//プレイヤーを見つける
-	Vector3 diff = m_player->GetPosition() - m_position;
-	if (diff.LengthSq() <= 600.0 * 600.0f)
+	IceBall* iceBall = NewGO<IceBall>(0);
+	Vector3 iceBallPosition = m_position;
+	//座標を少し上にする
+	iceBallPosition.y += 55.0f;
+	//座標を少し前にする
+	iceBallPosition += m_forward * 150.0f;
+	iceBall->SetPosition(iceBallPosition);
+	//回転を設定する
+	iceBall->SetRotation(m_rotation);
+	//魔法使用者を設定する
+	iceBall->SetEnUser(IceBall::enUser_Enemy);
+}
+
+void MagicEnemy::Collision()
+{
+	//被ダメージステートステートかダウンステートだったら
+	if (m_magicenemyState == enMagicEnemyState_ReceiveDamage || m_magicenemyState == enMagicEnemyState_Down)
 	{
-		diff.Normalize();
-		float cos = m_forward.Dot(diff);
-		float angle = acosf(cos);
-		if (angle <= (Math::PI / 180.0f) * 120.0f)
+		//何もしない
+		return;
+	}
+
+	//プレイヤーの拘束魔法の当たり判定
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("item_thunder");
+	for (auto collision : collisions)
+	{
+		//コリジョンとキャラコンが衝突したら
+		if (collision->IsHit(m_charaCon))
 		{
-			return true;
+			m_magicenemyState = enMagicEnemyState_ReceiveRestraint;
 		}
 	}
-	//プレイヤーを見つけてない
-	return false;
-}
 
-const bool MagicEnemy::IsCanTowerAttack() const
-{
-	Vector3 diff = m_tower->GetPosition() - m_position;
-	if (diff.LengthSq() <= 1000.0f * 1000.0f)
+	//プレイヤーの近接攻撃の当たり判定
+	const auto& collisions2 = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	for (auto collision : collisions2)
 	{
-		return true;
-	}
-	return false;
-}
+		//コリジョンとキャラコンが衝突したら
+		if (collision->IsHit(m_charaCon))
+		{
+			//SEを再生する
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
+			//Hpを1減らす
+			m_hp -= 1;
+			//被ダメージエフェクトを再生する
+			MakeDamageEffect();
+			//プレイヤーのMpが40以下だったら
+			if (m_player->m_mp < 40)
+			{
+				//プレイヤーのMpを10増やす
+				m_player->m_mp += 10;
+			}
 
-
-const bool MagicEnemy::IsCanPlayerAttack() const
-{
-	Vector3 diff = m_player->GetPosition() - m_position;
-	if (diff.LengthSq() <= 500.0f * 500.0f)
-	{
-		if (m_position.y <= 100.0f) {
-			return true;
+			//Hpが0になったら
+			if (m_hp <= 0)
+			{
+				//ダウンステートへ
+				m_magicenemyState = enMagicEnemyState_Down;
+			}
+			//Hpが0ではなかったら
+			else
+			{
+				//被ダメージステートへ
+				m_magicenemyState = enMagicEnemyState_ReceiveDamage;
+			}
 		}
 	}
-	return false;
+
+	//プレイヤーの魔法攻撃の当たり判定
+	const auto& collisions3 = g_collisionObjectManager->FindCollisionObjects("player_magic");
+	for (auto collision : collisions3)
+	{
+		//コリジョンとキャラコンが衝突したら
+		if (collision->IsHit(m_charaCon))
+		{
+			//SEを再生する
+			SoundSource* m_se = NewGO<SoundSource>(0);
+			m_se->Init(32);
+			m_se->SetVolume(0.3f);
+			m_se->Play(false);
+			//Hpを1減らす
+			m_hp -= 1;
+			//HPが0になったら
+			if (m_hp == 0)
+			{
+				//ダウンステートへ
+				m_magicenemyState = enMagicEnemyState_Down;
+			}
+			//Hpが0ではなかったら
+			else
+			{
+				//被ダメージステートへ
+				m_magicenemyState = enMagicEnemyState_ReceiveDamage;
+			}
+		}
+	}
 }
 
+void MagicEnemy::Restraint()
+{
+	//拘束ステートではなかったら
+	if (m_magicenemyState != enMagicEnemyState_ReceiveRestraint)
+	{
+		//何もしない
+		return;
+	}
+	//拘束タイマーを減らす
+	m_restraintTimer -= g_gameTime->GetFrameDeltaTime();
+}
+
+void MagicEnemy::MakeDamageEffect()
+{
+	//エフェクトを作成する
+	EffectEmitter* m_effectEmitter;
+	m_effectEmitter = NewGO<EffectEmitter>(0);
+	Vector3 m_EffectPosition = m_position;
+	Vector3 m_EffectScale = m_scale;
+	//座標を少し上にする
+	m_EffectPosition.y += 180.0f;
+	m_effectEmitter->SetPosition(m_EffectPosition);
+	//大きさを設定する
+	m_effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	//エフェクトを再生する
+	m_effectEmitter->Init(11);
+	m_effectEmitter->Play();
+}
 
 void MagicEnemy::PlayAnimation()
 {
-	switch (m_enemyState)
+	switch (m_magicenemyState)
 	{
-		//待機
+		//待機ステートの時
 	case enMagicEnemyState_Idle:
-		m_modelRender.SetAnimationSpeed(5.5f);
+		//再生速度
+		m_modelRender.SetAnimationSpeed(1.0f);
+		//待機アニメーションの再生
 		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.1f);
 		break;
-	case enMagicEnemyState_Assult:
+		//突撃ステートの時
+	case enMagicEnemyState_Assault:
+		//再生速度
 		m_modelRender.SetAnimationSpeed(1.0f);
-		m_modelRender.PlayAnimation(enAnimationClip_Assult, 0.1f);
+		//突撃アニメーションの再生
+		m_modelRender.PlayAnimation(enAnimationClip_Assault, 0.1f);
 		break;
+		//攻撃ステートの時
 	case enMagicEnemyState_Attack:
-		m_modelRender.SetAnimationSpeed(0.7f);
+		//再生速度
+		m_modelRender.SetAnimationSpeed(1.0f);
+		//攻撃アニメーションの再生
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.1f);
 		break;
+		//被ダメージステートの時
 	case enMagicEnemyState_ReceiveDamage:
+		//再生速度
 		m_modelRender.SetAnimationSpeed(1.7f);
+		//被ダメージアニメーションの再生
 		m_modelRender.PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
 		break;
-	case enMagicEnemyState_ElectricShock:
+		//拘束ステートの時
+	case enMagicEnemyState_ReceiveRestraint:
+		//再生速度
 		m_modelRender.SetAnimationSpeed(0.5f);
-		m_modelRender.PlayAnimation(enAnimationClip_ElectricShock, 0.1f);
+		//拘束アニメーションの再生
+		m_modelRender.PlayAnimation(enAnimationClip_ReceiveRestraint, 0.1f);
 		break;
+		//ダウンステートの時
 	case enMagicEnemyState_Down:
+		//再生速度
 		m_modelRender.SetAnimationSpeed(1.0f);
+		//ダウンアニメーションの再生
 		m_modelRender.PlayAnimation(enAnimationClip_Down, 0.1f);
 		break;
 	default:
@@ -307,26 +318,37 @@ void MagicEnemy::PlayAnimation()
 
 void MagicEnemy::ManageState()
 {
-	switch (m_enemyState)
+	switch (m_magicenemyState)
 	{
-		//待機
+		//待機ステートの時
 	case enMagicEnemyState_Idle:
+		//待機ステートのステート遷移処理
 		ProcessIdleStateTransition();
 		break;
-	case enMagicEnemyState_Assult:
+		//突撃ステートの時
+	case enMagicEnemyState_Assault:
+		//突撃ステートのステート遷移処理
 		ProcessAssultStateTransition();
 		break;
+		//攻撃ステートの時
 	case enMagicEnemyState_Attack:
+		//攻撃ステートのステート遷移処理
 		ProcessAttackStateTransition();
 		break;
+		//被ダメージステートの時
 	case enMagicEnemyState_ReceiveDamage:
-		ProcessReceiveDamageTransition();
+		//被ダメージステートのステート遷移処理
+		ProcessReceiveDamageStateTransition();
 		break;
-	case enMagicEnemyState_ElectricShock:
-		ProcessElectricShockStateTransition();
+		//拘束ステートの時
+	case enMagicEnemyState_ReceiveRestraint:
+		//拘束ステートのステート遷移処理
+		ProcessReceiveRestraintStateTransition();
 		break;
+		//ダウンステートの時
 	case enMagicEnemyState_Down:
-		ProcessDownTransition();
+		//ダウンステートのステート遷移処理
+		ProcessDownStateTransition();
 		break;
 	default:
 		break;
@@ -335,66 +357,61 @@ void MagicEnemy::ManageState()
 
 void MagicEnemy::ProcessCommonStateTransition()
 {
-	//エネミーはプレイヤーへの攻撃より塔への攻撃を優先する
+	//プレイヤーへ向かうベクトル
 	Vector3 diff_player = m_player->GetPosition() - m_position;
-	Vector3 diff_tower = m_tower->GetPosition() - m_position;
+	//ベクトルの正規化
+	diff_player.Normalize();
 
-	//プレイヤーへの攻撃範囲内だったら
+	//プレイヤーを攻撃できるなら
 	if (IsCanPlayerAttack() == true)
 	{
-		//プレイヤーにベクトルを向ける
-		diff_player.Normalize();
-		m_moveSpeed = diff_player * 300.0f;
+		m_moveSpeed = diff_player * MOVE_SPEED;
 		int ram = rand() % 100;
-		if (ram > 10)
+		if (ram > 30)
 		{
-			//攻撃する
-			m_enemyState = enMagicEnemyState_Attack;
+			//攻撃ステートへ
+			m_magicenemyState = enMagicEnemyState_Attack;
 			return;
 		}
 		else
 		{
-			//待機する
-			m_enemyState = enMagicEnemyState_Idle;
+			//待機ステートへ
+			m_magicenemyState = enMagicEnemyState_Idle;
 			return;
 		}
 	}
-
 
 	if (IsCanTowerAttack() == true)
 	{
-		//プレイヤーにベクトルを向ける
-		diff_tower.Normalize();
-		m_moveSpeed = diff_tower * 300.0f;
 		int ram = rand() % 100;
-		if (ram > 10)
+		if (ram > 30)
 		{
-			//攻撃する
-			m_enemyState = enMagicEnemyState_Attack;
+			//攻撃ステートへ
+			m_magicenemyState = enMagicEnemyState_Attack;
 			return;
 		}
 		else
 		{
-			//待機する
-			m_enemyState = enMagicEnemyState_Idle;
+			//待機ステートへ
+			m_magicenemyState = enMagicEnemyState_Idle;
 			return;
 		}
 	}
+
+	//攻撃できないなら
 	else
 	{
-		m_enemyState = enMagicEnemyState_Assult;
+		//突撃ステートへ
+		m_magicenemyState = enMagicEnemyState_Assault;
 		return;
 	}
 }
 
 void MagicEnemy::ProcessIdleStateTransition()
 {
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{ 		//他のステートに遷移する
-		ProcessCommonStateTransition();
-		return;
-	}
+	//他のステートに遷移する
+	ProcessCommonStateTransition();
+	return;
 }
 
 void MagicEnemy::ProcessAssultStateTransition()
@@ -415,39 +432,49 @@ void MagicEnemy::ProcessAttackStateTransition()
 	}
 }
 
-void MagicEnemy::ProcessReceiveDamageTransition()
+void MagicEnemy::ProcessReceiveDamageStateTransition()
 {
+	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		if (electrictimer < 9.0f)
+		//拘束タイマーが減っていたら
+		if (m_restraintTimer < RESTRAINT_TIME)
 		{
-			m_enemyState = enMagicEnemyState_ElectricShock;
+			//拘束ステートへ
+			m_magicenemyState = enMagicEnemyState_ReceiveRestraint;
 			return;
 		}
-		else {
+		else
+		{
+			//他のステートに遷移する
 			ProcessCommonStateTransition();
 			return;
 		}
 	}
 }
 
-void MagicEnemy::ProcessElectricShockStateTransition()
+void MagicEnemy::ProcessReceiveRestraintStateTransition()
 {
-	if (electrictimer <= 0.0f)
+	//拘束タイマーが0.0f以下だったら
+	if (m_restraintTimer <= 0.0f)
 	{
+		//他のステートに遷移する
 		ProcessCommonStateTransition();
-		electrictimer = 9.0f;
+		//拘束タイマーを初期化
+		m_restraintTimer = RESTRAINT_TIME;
 		return;
 	}
 }
 
-void MagicEnemy::ProcessDownTransition()
+void MagicEnemy::ProcessDownStateTransition()
 {
+	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//他のステートに遷移する
-		DeleteGO(this);
+		//敵死亡数を増やす
 		m_game->m_DeadEnemynum++;
+		//自身を削除する
+		DeleteGO(this);
 		return;
 	}
 }
@@ -456,14 +483,42 @@ void MagicEnemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventN
 {
 	if (wcscmp(eventName, L"magic_attack") == 0)
 	{
+		//魔法攻撃を作成する
 		MakeMagicBall();
 	}
+}
 
-
+const bool MagicEnemy::IsCanTowerAttack() const
+{
+	//タワーを攻撃できる
+	Vector3 diff = m_tower->GetPosition() - m_position;
+	if (diff.LengthSq() <= TOWER_ATTACK_RANGE * TOWER_ATTACK_RANGE)
+	{
+		return true;
+	}
+	//タワーを攻撃できない
+	return false;
 }
 
 
+const bool MagicEnemy::IsCanPlayerAttack() const
+{
+	//プレイヤーを攻撃できる
+	Vector3 diff = m_player->GetPosition() - m_position;
+	if (diff.LengthSq() <= PLAYER_ATTACK_RANGE * PLAYER_ATTACK_RANGE)
+	{
+		//地面に足がついていたら
+		if (m_charaCon.IsOnGround() == true)
+		{
+			return true;
+		}
+	}
+	//プレイヤーを攻撃できない
+	return false;
+}
+
 void MagicEnemy::Render(RenderContext& rc)
 {
+	//モデルの描画処理
 	m_modelRender.Draw(rc);
 }

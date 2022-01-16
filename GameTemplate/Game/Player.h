@@ -1,10 +1,10 @@
 #pragma once
 
 //クラス宣言
-class Game;
-class Enemy;
-class IceBall;
-class Tower;
+class Game;           //ゲームクラス
+class Enemy;          //エネミークラス
+class IceBall;        //魔法攻撃クラス
+class Tower;          //タワークラス
 
 //プレイヤー
 class Player : public IGameObject
@@ -12,24 +12,21 @@ class Player : public IGameObject
 public:
 	//プレイヤーのステート
 	enum EnPlayerState {
-		enPlayerState_FadeWait,
-		enPlayerState_Idle,
-		enPlayerState_Run,
-		enPlayerState_UseItem,
-		enPlayerState_UseHeal,
-		enPlayerState_FirstAttack,
-		enPlayerState_SecondAttack,
-		enPlayerState_ThirdAttack,
-		enPlayerState_Cheak,
-		enPlayerState_Magic,
-		enPlayerState_ReceiveDamage,
-		enPlayerState_Win,
-		enPlayerState_Down,
+		enPlayerState_FadeWait,         //フェード待機
+		enPlayerState_Idle,             //待機中
+		enPlayerState_Run,              //走り
+		enPlayerState_UseItem,          //拘束魔法使用中
+		enPlayerState_UseHeal,          //タワー修理使用中
+		enPlayerState_FirstAttack,      //1回目の攻撃
+		enPlayerState_SecondAttack,     //2回目の攻撃
+		enPlayerState_ThirdAttack,      //3回目の攻撃
+		enPlayerState_Magic,            //魔法攻撃
+		enPlayerState_ReceiveDamage,    //被ダメージ
 	};
 	//アイテムのステート
 	enum EnEquipState {
-		enEquipState_Heal,
-		enEquipState_Thuner,
+		enEquipState_Heal,              //タワー修理
+		enEquipState_Thuner,            //拘束魔法
 	};
 
 public:
@@ -74,10 +71,10 @@ public:
 			m_playerState != enPlayerState_UseItem &&
 			m_playerState != enPlayerState_UseHeal &&
 			m_playerState != enPlayerState_ReceiveDamage &&
-			m_playerState != enPlayerState_Down &&
 			m_playerState != enPlayerState_Magic;
 	}
-//private:/ 	
+
+	//連続攻撃判定
 	void  Hit();
 	//移動処理
 	void Move();
@@ -97,13 +94,13 @@ public:
 	void MakeThirdSlashingEffect();
 	//魔法攻撃を作成する
 	void MakeMagicBall();
-	//足止めアイテム（効果範囲）のエフェクト
+	//足止めスキル（効果範囲）のエフェクト
 	void MakeRangeEffect();
-	//足止めアイテム（使用時）のエフェクト
+	//足止めスキル（使用時）のエフェクト
 	void MakeEnemyStopEffect();
-	//足止めアイテムのコリジョン
+	//足止めスキルのコリジョン
 	void MakeEnemyStopCollision();
-	//アイテム選択
+	//スキル選択
 	void ChoiseItem();
 
 
@@ -131,28 +128,26 @@ public:
 	void ProcessMagicStateTransition();
 	//アイテム使用ステートの遷移処理
 	void ProcessUseItemStateTransition();
+	//フェード待機ステートの遷移処理
 	void ProcessFadeWaitStateTransition();
-	void ProcessWinStateTransition();
-	void ProcessDownStateTransition();
+	//タワー修理使用中ステートの遷移処理
 	void ProcessHealStateTransition();
 
 	//アニメーションクリップ
 	enum EnAnimationClip {
-		enAnimationClip_Idle,
-		enAnimationClip_Run,
-		enAnimationClip_Damage,
-		enAnimationClip_FirstAttack,
-		enAnimationClip_SecondAttack,
-		enAnimationClip_ThirdAttack,
-		enAnimationClip_Magic,
-		enAnimationClip_UseItem,
-		enAnimationClip_UseHeal,
-		enAnimationClip_Win,
-		enAnimationClip_Down,
-		enAnimationClip_Num
+		enAnimationClip_Idle,              //待機アニメーション
+		enAnimationClip_Run,               //走りアニメーション
+		enAnimationClip_Damage,            //被ダメージアニメーション
+		enAnimationClip_FirstAttack,       //攻撃アニメーション（1撃目）
+		enAnimationClip_SecondAttack,      //攻撃アニメーション（2撃目）
+		enAnimationClip_ThirdAttack,       //攻撃アニメーション（3撃目）
+		enAnimationClip_Magic,             //魔法攻撃アニメーション
+		enAnimationClip_UseItem,		   //スキル使用アニメーション（拘束魔法）
+		enAnimationClip_UseHeal,           //スキル使用アニメーション（タワー修理）
+		enAnimationClip_Num                //アニメーションの数
 	};
 	
-	SpriteRender PlayerUseMagic;
+	SpriteRender m_PlayerUseMagic;
 	SpriteRender PlayerSubMagic;
 	SpriteRender m_itemWaku;
 	SpriteRender m_itemStop;
@@ -165,7 +160,7 @@ public:
 	FontRender           m_fontRender1;
 	FontRender           m_fontRender2;
 	FontRender           m_fontRender3;  
-	AnimationClip			m_animationClips[enAnimationClip_Num];//アニメーションクリップ//モデルレンダー
+	AnimationClip		 m_animationClips[enAnimationClip_Num];//アニメーションクリップ//モデルレンダー
 	Vector3              m_position;       
 	Vector3              m_scale = Vector3::One;                         //大きさ
 	Vector3              m_moveSpeed;                          //移動速度
@@ -178,7 +173,7 @@ public:
 	bool                 m_isUnderAttack = false;
 	int                  m_swordBoneId = -1;
 	float                m_hp = 100;
-	float               m_mp = 20;
+	float                m_mp = 20;
 	//0=一撃目　1=2撃目  2=3撃目
 	int Type = 0;
 	//0=タイマー停止　1=タイマー起動
@@ -201,7 +196,7 @@ public:
 	int a = 0;
 	int b = 0;
 
-	Enemy* m_enemy = nullptr;
-	Game* m_game = nullptr;
-	Tower* m_tower = nullptr;
+	Enemy* m_enemy = nullptr;               //エネミー
+	Game* m_game = nullptr;                 //ゲーム
+	Tower* m_tower = nullptr;               //タワー
 };

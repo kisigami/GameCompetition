@@ -1,22 +1,21 @@
 #pragma once
 
-class Player;
-class Tower;
-class IceBall;
-class Game;
-
+class Player;           //プレイヤークラス
+class Tower;            //タワークラス
+class IceBall;          //魔法攻撃クラス
+class Game;             //ゲームクラス
 
 class MagicEnemy: public IGameObject
 {
 public:
 	//エネミーステート
 	enum EnMagicEnemyState {
-		enMagicEnemyState_Idle,
-		enMagicEnemyState_Assult,        //タワー突撃
-		enMagicEnemyState_Attack,        //攻撃
-		enMagicEnemyState_ReceiveDamage,
-		enMagicEnemyState_ElectricShock,
-		enMagicEnemyState_Down,
+		enMagicEnemyState_Idle,              //待機中
+		enMagicEnemyState_Assault,            //突撃
+		enMagicEnemyState_Attack,            //攻撃
+		enMagicEnemyState_ReceiveDamage,     //被ダメージ
+		enMagicEnemyState_ReceiveRestraint,  //拘束
+		enMagicEnemyState_Down,              //ダウン
 	};
 public:
 	MagicEnemy();
@@ -50,25 +49,20 @@ public:
 		m_hp = hp;
 	}
 
-	void UpdateInstansingData(
-		const Vector3& pos,
-		const Quaternion& rot, const Vector3& scale
-	) {
-		m_modelRender.UpdateInstancingData(pos, rot, scale);
-	}
-	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
-	
-	//void ItemThunderEffect();
-	//塔への移動処理
-	void Assult();
+	//突撃処理
+	void Move();
 	//回転処理
 	void Rotation();
 	//攻撃処理
 	void MakeMagicBall();
-	void MakeDamageEffect();
-	void Electric();
 	//プレイヤーとの当たり判定処理
 	void Collision();
+	//拘束処理
+	void Restraint();
+	//被ダメージエフェクト
+	void MakeDamageEffect();
+	//アニメーションイベント用の関数
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	//アニメーションの再生
 	void PlayAnimation();
 	//各ステートの遷移処理
@@ -82,53 +76,40 @@ public:
 	//攻撃ステートの遷移処理
 	void ProcessAttackStateTransition();
 	//被ダメージステートの遷移処理
-	void ProcessReceiveDamageTransition();
-	void ProcessElectricShockStateTransition();
+	void ProcessReceiveDamageStateTransition();
 	//ダウンステートの遷移処理
-	void ProcessDownTransition();
-	//プレイヤーを発見したか
-	const bool SearchPlayer() const;
+	void ProcessDownStateTransition();
+	//拘束ステートの遷移処理
+	void ProcessReceiveRestraintStateTransition();
+	
 	//プレイヤーを攻撃できるか
 	const bool IsCanPlayerAttack() const;
 	//塔を攻撃できるか
 	const bool IsCanTowerAttack() const;
 
-
-	enum EnAnimationClip {    	//アニメーションクリップ
-		enAnimationClip_Idle,  //待機アニメーション
-		enAnimationClip_Assult, //突撃アニメーション
-		enAnimationClip_Attack, //攻撃アニメーション
-		enAnimationClip_ReceiveDamage,
-		enAnimationClip_ElectricShock,
-		enAnimationClip_Down,
-		enAnimationClip_Num,	//アニメーションの数
+	enum EnAnimationClip {                  //アニメーションクリップ
+		enAnimationClip_Idle,               //待機アニメーション
+		enAnimationClip_Assault,             //突撃アニメーション
+		enAnimationClip_Attack,             //攻撃アニメーション
+		enAnimationClip_ReceiveDamage,      //被ダメージアニメーション
+		enAnimationClip_ReceiveRestraint,   //拘束アニメーション
+		enAnimationClip_Down,               //ダウンアニメーション
+		enAnimationClip_Num,                //アニメーションの数
 	};
-	//移動できるか
-	bool IsEnableMove() const
-	{
-		//攻撃時は移動しない
-		return
-			m_enemyState != enMagicEnemyState_Attack &&
-			m_enemyState != enMagicEnemyState_ReceiveDamage &&
-			m_enemyState != enMagicEnemyState_ElectricShock &&
-			m_enemyState != enMagicEnemyState_Down;
-	}
-	AnimationClip m_animationClips[enAnimationClip_Num];		//アニメーションクリップ
-	ModelRender m_modelRender;
-	FontRender m_fontRender;
-	CharacterController	m_charaCon;									//キャラコン
-	Vector3 m_position;
-	Vector3 m_moveSpeed;
-	Vector3	m_scale = Vector3::One;
-	Vector3 m_forward = Vector3::AxisZ;
-	Quaternion m_rotation;
-	bool m_isUnderAttack = false;
-	EnMagicEnemyState m_enemyState = enMagicEnemyState_Assult;
-	Tower* m_tower = nullptr;
-	Player* m_player = nullptr;
-	int    m_hp = 2;
-	float electrictimer = 9.0f;
-	int m_MagicEnemynum = 3;
-	Game* m_game = nullptr;
+	
+	AnimationClip         m_animationClips[enAnimationClip_Num];	 	  //アニメーションクリップ
+	ModelRender           m_modelRender;                                  //モデルレンダー
+	CharacterController	  m_charaCon;								 	  //キャラコン
+	Vector3               m_position;                                     //座標
+	Vector3               m_moveSpeed;                                    //移動速度
+	Vector3	              m_scale = Vector3::One;                         //大きさ
+	Vector3               m_forward = Vector3::AxisZ;                     //マジックエネミーの正面ベクトル
+	Quaternion            m_rotation;                                     //回転
+	EnMagicEnemyState     m_magicenemyState = enMagicEnemyState_Assault;  //マジックエネミーステート
+	int                   m_hp = 2;                                       //HP
+	float                 m_restraintTimer = 8.0f;                        //拘束タイマー
+	Tower*                m_tower = nullptr;                              //タワー
+	Player*               m_player = nullptr;                             //プレイヤー
+	Game*                 m_game = nullptr;                               //ゲーム
 };
 

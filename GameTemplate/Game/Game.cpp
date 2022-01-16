@@ -3,14 +3,14 @@
 
 #include "Player.h"
 #include "Tower.h"
-
-//エネミー
 #include "Background.h"
 #include "GameCamera.h"
+
 #include "Enemy.h"
 #include "PlayerAttackEnemy.h"
 #include "MagicEnemy.h"
 #include "TwoSwordEnemy.h"
+#include "BattleStartFade.h"
 
 #include "Fade.h"
 #include "GameClear.h"
@@ -18,8 +18,6 @@
 #include "TowerUi.h"
 #include "PlayerUi.h"
 #include "HowToPlay.h"
-
-#include "BattleStartFade.h"
 
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"

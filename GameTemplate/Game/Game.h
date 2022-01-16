@@ -102,6 +102,6 @@ public:
 	float  m_gametimeFont = 8.0f;
 
 	EnGameState m_gameState = enGameState_Idle;
-	EnWaveState m_waveState = enWaveState_3;
+	EnWaveState m_waveState = enWaveState_2;
 };
 

@@ -143,6 +143,7 @@ void Player::Update()
 
 void Player::Hit()
 {
+
 	//攻撃ステート1なら
 	if (m_playerState == enPlayerState_FirstAttack)
 	{
@@ -173,13 +174,6 @@ void Player::Hit()
 			m_attackTimer = 0.0f;//タイマーをリセットする
 			move = 0;
 		}
-		//攻撃を食らったら攻撃タイプを0へ
-		if (m_playerState == enPlayerState_ReceiveDamage)
-		{
-			Type = 0;
-			m_attackTimer = 0.0f;
-			move = 0;
-		}
 	}
 	if (move2 == 1)
 	{
@@ -195,13 +189,15 @@ void Player::Hit()
 			m_attackTimer2 = 0.0f;//タイマーをリセットする
 			move2 = 0;
 		}
-		//攻撃を食らったら攻撃タイプを0へ
-		if (m_playerState == enPlayerState_ReceiveDamage)
-		{
-			Type = 0;
-			m_attackTimer2 = 0.0f;
-			move2 = 0;
-		}
+	}
+
+	//攻撃を食らったら攻撃タイプを0へ
+	if (m_playerState == enPlayerState_ReceiveDamage)
+	{
+		Type = 0;
+		m_attackTimer2 = 0.0f;
+		move = 0;
+		move2 = 0;
 	}
 }
 void Player::Move()
@@ -252,7 +248,7 @@ void Player::Rotation()
 void Player::Collision()
 {
 	//被ダメージステートなら
-	if (m_playerState == enPlayerState_ReceiveDamage || m_playerState == enPlayerState_Down 
+	if (m_playerState == enPlayerState_ReceiveDamage 
 		|| m_playerState == enPlayerState_UseItem || m_playerState == enPlayerState_UseHeal)
 	{
 		//ダメージ判定をしない
@@ -536,16 +532,6 @@ void Player::MakeEnemyStopEffect()
 void Player::ProcessCommonStateTransition()
 {
 
-	if (m_tower->m_hp <= 0)
-	{
-		m_playerState = enPlayerState_Down;
-		return;
-	}
-	if (m_hp <= 0)
-	{
-		m_playerState = enPlayerState_Down;
-		return;
-	}
 	if (m_game->m_isBattleStartFade == true)
 	{
 		m_playerState = enPlayerState_FadeWait;
@@ -725,21 +711,7 @@ void  Player::ProcessFadeWaitStateTransition()
 		ProcessCommonStateTransition();
 	}
 }
-void Player::ProcessWinStateTransition()
-{
-	if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		m_game->GameClearNotice();
-	}
-}
 
-void Player::ProcessDownStateTransition()
-{
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		m_game->GameOverNotice();
-	}
-}
 void Player::ProcessHealStateTransition()
 {
 	if (m_modelRender.IsPlayingAnimation() == false)
@@ -799,12 +771,6 @@ void Player::ManageState()
 	case enPlayerState_FadeWait:
 		//アイテム使用ステートのステート遷移処理
 		ProcessFadeWaitStateTransition();
-		break;
-	case enPlayerState_Win:
-		ProcessWinStateTransition();
-		break;
-	case enPlayerState_Down:
-		ProcessDownStateTransition();
 		break;
 	}
 }

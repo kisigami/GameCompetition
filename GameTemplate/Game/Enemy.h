@@ -1,10 +1,9 @@
 #pragma once
 
 //クラス宣言
-class Player;
-class Tower;
-class Game;
-class GamePoint;
+class Player;          //プレイヤークラス
+class Tower;           //タワークラス
+class Game;            //ゲームクラス
 
 //エネミー
 class Enemy:public IGameObject
@@ -12,12 +11,12 @@ class Enemy:public IGameObject
 public:
 	//エネミーステート
 	enum EnEnemyState {
-		enEnemyState_Idle,
-		enEnemyState_Assult,        //タワー突撃
-		enEnemyState_Attack,        //攻撃
-		enEnemyState_ReceiveDamage,
-		enEnemyState_ElectricShock,
-		enEnemyState_Down,
+		enEnemyState_Idle,              //待機中
+		enEnemyState_Assault,           //突撃
+		enEnemyState_Attack,            //攻撃
+		enEnemyState_ReceiveDamage,     //被ダメージ
+		enEnemyState_ReceiveRestraint,  //拘束
+		enEnemyState_Down,              //ダウン
 	};
 public:
 	Enemy();
@@ -51,9 +50,8 @@ public:
 		m_hp = hp;
 	}
 
-	//塔への移動処理
-	void Assult();
-	void Electric();
+	//突撃処理
+	void Move();
 	//回転処理
 	void Rotation();
 	//攻撃処理
@@ -62,6 +60,9 @@ public:
 	void Collision();
 	//攻撃用の当たり判定を作成する
 	void MakeAttackCollision();
+	//拘束処理
+	void Restraint();
+	//被ダメージエフェクト
 	void MakeDamageEffect();
 	//アニメーションイベント用の関数
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
@@ -78,58 +79,42 @@ public:
 	//攻撃ステートの遷移処理
 	void ProcessAttackStateTransition();
 	//被ダメージステートの遷移処理
-	void ProcessReceiveDamageTransition();
+	void ProcessReceiveDamageStateTransition();
 	//ダウンステートの遷移処理
-	void ProcessDownTransition();
+	void ProcessDownStateTransition();
+	//拘束ステートの遷移処理
+	void ProcessReceiveRestraintStateTransition();
 
-	void ProcessElectricShockTransition();
-
-	//プレイヤーを発見したか
-	const bool SearchPlayer() const;
 	//プレイヤーを攻撃できるか
 	const bool IsCanPlayerAttack() const;
 	//塔を攻撃できるか
 	const bool IsCanTowerAttack() const;
 
-	enum EnAnimationClip {    	//アニメーションクリップ
-		enAnimationClip_Idle,  //待機アニメーション
-		enAnimationClip_Assult, //突撃アニメーション
-		enAnimationClip_Attack, //攻撃アニメーション
-		enAnimationClip_ReceiveDamage,
-		enAnimationClip_ElectricShock,
-		enAnimationClip_Down,
-		enAnimationClip_Num,	//アニメーションの数
+	enum EnAnimationClip {    	           //アニメーションクリップ
+		enAnimationClip_Idle,              //待機アニメーション
+		enAnimationClip_Assult,            //突撃アニメーション
+		enAnimationClip_Attack,            //攻撃アニメーション
+		enAnimationClip_ReceiveDamage,     //被ダメージアニメーション
+		enAnimationClip_ReceiveRestraint,  //拘束アニメーション
+		enAnimationClip_Down,              //ダウンアニメーション
+		enAnimationClip_Num,	           //アニメーションの数
 	};
-	//移動できるか
-	bool IsEnableMove() const
-	{
-		return
-			m_enemyState != enEnemyState_Attack &&
-			m_enemyState != enEnemyState_ReceiveDamage &&
-			m_enemyState != enEnemyState_ElectricShock &&
-			m_enemyState != enEnemyState_Down;
-	}
 
-	AnimationClip m_animationClips[enAnimationClip_Num];
-	ModelRender m_modelRender;
-	FontRender m_timerFont;
-	CharacterController	m_charaCon;							
-	Vector3 m_position;
-	Vector3 m_moveSpeed;
-	Vector3	m_scale = Vector3::One;
-	Vector3 m_forward = Vector3::AxisZ;
-	Quaternion m_rotation;
-	bool m_isUnderAttack = false;
-	EnEnemyState m_enemyState = enEnemyState_Assult;
-	Tower* m_tower = nullptr;
-	Player* m_player = nullptr;
-	Enemy* m_enemy = nullptr;
-	int m_swordBoneId = -1;
-	int    m_hp =3;
-	int ram; 
-	float electrictimer = 9.0f;
-	EffectEmitter* effectEmitter;
-	int m_enemynum = 6;
-	Game* m_game = nullptr;
+	AnimationClip         m_animationClips[enAnimationClip_Num];    //アニメーションクリップ 
+	ModelRender           m_modelRender;                            //モデルレンダー
+	CharacterController	  m_charaCon;						        //キャラクターコントローラー
+	Vector3               m_position;                               //座標
+	Vector3               m_moveSpeed;                              //移動速度
+	Vector3	              m_scale = Vector3::One;                   //大きさ
+	Vector3               m_forward = Vector3::AxisZ;               //エネミーの正面ベクトル
+	Quaternion            m_rotation;                               //回転
+	bool                  m_isUnderAttack = false;                  //攻撃中か？
+	EnEnemyState          m_enemyState = enEnemyState_Assault;      //エネミーステート
+	int                   m_swordBoneId = -1;                       //ソードボーンID
+	int                   m_hp =3;                                  //HP
+	float                 m_restraintTimer = 8.0f;                  //拘束タイマー
+	Game*                 m_game = nullptr;                         //ゲーム
+	Tower*                m_tower = nullptr;                        //タワー
+	Player*               m_player = nullptr;                       //プレイヤー
 };
 
