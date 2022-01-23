@@ -1,5 +1,6 @@
 #pragma once
 
+//背景クラス
 class Background:public IGameObject
 {
 public:
@@ -8,7 +9,7 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
+	//座標を設定
 	void SetPosition(const Vector3& position)
 	{
 		m_position = position;
@@ -28,12 +29,11 @@ public:
 	{
 		m_rotation = rotation;
 	}
-
 private:
 	ModelRender          m_modelRender;                        //モデルレンダー
 	Vector3              m_position;                           //座標
-	Vector3              m_scale;
-	Quaternion           m_rotation;
-	PhysicsStaticObject	 m_physicsStaticObject;
+	Vector3              m_scale;                              //大きさ
+	Quaternion           m_rotation;                           //回転
+	PhysicsStaticObject	 m_physicsStaticObject;                //フィジクススタティックオブジェクト
 };
 

@@ -2,7 +2,7 @@
 
 class Player;           //プレイヤークラス
 class Tower;            //タワークラス
-class IceBall;          //魔法攻撃クラス
+class MagicBall;          //魔法攻撃クラス
 class Game;             //ゲームクラス
 
 class MagicEnemy: public IGameObject

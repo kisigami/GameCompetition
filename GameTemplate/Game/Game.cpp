@@ -5,13 +5,11 @@
 #include "Tower.h"
 #include "Background.h"
 #include "GameCamera.h"
-
 #include "Enemy.h"
 #include "PlayerAttackEnemy.h"
 #include "MagicEnemy.h"
 #include "TwoSwordEnemy.h"
 #include "BattleStartFade.h"
-
 #include "Fade.h"
 #include "GameClear.h"
 #include "GameOver.h"

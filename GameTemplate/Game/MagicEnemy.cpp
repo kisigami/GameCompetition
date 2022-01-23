@@ -4,7 +4,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "Tower.h"
-#include "IceBall.h"
+#include "MagicBall.h"
 
 #include "collision/CollisionObject.h"
 #include "graphics/effect/EffectEmitter.h"
@@ -135,17 +135,17 @@ void MagicEnemy::Rotation()
 
 void MagicEnemy::MakeMagicBall()
 {
-	IceBall* iceBall = NewGO<IceBall>(0);
-	Vector3 iceBallPosition = m_position;
+	//魔法攻撃を作成する
+	MagicBall* magicBall = NewGO<MagicBall>(0);
+	Vector3 magicBallPosition = m_position;
 	//座標を少し上にする
-	iceBallPosition.y += 55.0f;
+	magicBallPosition.y += 55.0f;
 	//座標を少し前にする
-	iceBallPosition += m_forward * 150.0f;
-	iceBall->SetPosition(iceBallPosition);
-	//回転を設定する
-	iceBall->SetRotation(m_rotation);
-	//魔法使用者を設定する
-	iceBall->SetEnUser(IceBall::enUser_Enemy);
+	magicBallPosition += m_forward * 150.0f;
+	magicBall->SetPosition(magicBallPosition);
+	magicBall->SetRotation(m_rotation);
+	//使用者をマジックエネミーにする
+	magicBall->SetEnUser(MagicBall::enUser_Enemy);
 }
 
 void MagicEnemy::Collision()

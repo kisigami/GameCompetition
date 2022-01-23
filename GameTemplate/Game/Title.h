@@ -19,13 +19,13 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 
-	SpriteRender    m_spriteRender;           //スプリントレンダー
-	SpriteRender    m_titlesword;
+	SpriteRender    m_titleButtom;           //スプリントレンダー
+	SpriteRender    m_titleSword;
 	SpriteRender    m_gamestartFont;
-	SpriteRender    m_asobikataFont;
+	SpriteRender    m_howtoplayFont;
 	SpriteRender    m_blackButton;
-	SpriteRender    m_yajirusi;
-	SpriteRender    m_titlefont;
+	SpriteRender    m_choice;
+	SpriteRender    m_titleFont;
 
 	Vector3 m_position;
 	Fade* m_fade = nullptr;		  //フェード。

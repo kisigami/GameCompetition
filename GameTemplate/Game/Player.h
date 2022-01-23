@@ -3,7 +3,7 @@
 //クラス宣言
 class Game;           //ゲームクラス
 class Enemy;          //エネミークラス
-class IceBall;        //魔法攻撃クラス
+class MagicBall;        //魔法攻撃クラス
 class Tower;          //タワークラス
 
 //プレイヤー

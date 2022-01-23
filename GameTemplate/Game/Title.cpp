@@ -30,11 +30,11 @@ bool Title::Start()
 	m_bgm->SetVolume(0.2f);
 
 	//画像の読み込み
-	m_spriteRender.Init("Assets/sprite/tite/titleButtom.dds", 1920.0f, 1080.0f);
+	m_titleButtom.Init("Assets/sprite/tite/titleButtom.dds", 1920.0f, 1080.0f);
 
 	m_gamestartFont.Init("Assets/sprite/tite/titleGS.dds", 1920.0f, 1080.0f);
 
-	m_titlefont.Init("Assets/sprite/tite/titlefont.dds", 1920.0f, 1080.0f);
+	m_titleFont.Init("Assets/sprite/tite/titlefont.dds", 1920.0f, 1080.0f);
 
 	//選択画面の背景（黒）
 	m_blackButton.Init("Assets/sprite/tite/titleBlack.dds", 1920.0f, 1080.0f);
@@ -42,12 +42,12 @@ bool Title::Start()
 
 
 	//遊び方のフォント
-	m_asobikataFont.Init("Assets/sprite/tite/titleA.dds", 1920.0f, 1080.0f);
-	m_asobikataFont.SetMulColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	m_howtoplayFont.Init("Assets/sprite/tite/titleA.dds", 1920.0f, 1080.0f);
+	m_howtoplayFont.SetMulColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
-	m_titlesword.Init("Assets/sprite/tite/titlesword.dds", 1920.0f, 1080.0f);
+	m_titleSword.Init("Assets/sprite/tite/titlesword.dds", 1920.0f, 1080.0f);
 
-	m_yajirusi.Init("Assets/sprite/yajirusi.dds", 1920.0f, 1080.0f);
+	m_choice.Init("Assets/sprite/yajirusi.dds", 1920.0f, 1080.0f);
 	//フェードを探す
 	m_fade = FindGO<Fade>("fade");
 	m_howtoplay = FindGO<HowToPlay>("howtoplay");
@@ -73,11 +73,11 @@ void Title::Update()
 	}
 	else if (m_TitleState == enTitleState_Rule)
 	{
-		m_asobikataFont.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha))));
+		m_howtoplayFont.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha))));
 	}
 
-	m_yajirusi.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha2))));
-	m_titlefont.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha3))));
+	m_choice.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha2))));
+	m_titleFont.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha3))));
 
 	if (g_pad[0]->IsTrigger(enButtonDown))
 	{
@@ -90,8 +90,8 @@ void Title::Update()
 			m_se->SetVolume(0.2f);
 			m_TitleState = enTitleState_Rule;
 			m_gamestartFont.SetMulColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-			m_asobikataFont.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-			m_yajirusi.SetPosition(Vector3(0.0f, -144.0f, 0.0f));
+			m_howtoplayFont.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+			m_choice.SetPosition(Vector3(0.0f, -144.0f, 0.0f));
 			break;
 		default:
 			break;
@@ -107,9 +107,9 @@ void Title::Update()
 			m_se->Play(false);
 			m_se->SetVolume(0.2f);
 			m_TitleState = enTitleState_gamestart;
-			m_asobikataFont.SetMulColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+			m_howtoplayFont.SetMulColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 			m_gamestartFont.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-			m_yajirusi.SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+			m_choice.SetPosition(Vector3(0.0f, 0.0f, 0.0f));
 			break;
 		default:
 			break;
@@ -145,12 +145,12 @@ void Title::Update()
 		}
 	}
 	//画像の更新
-	m_spriteRender.Update();
+	m_titleButtom.Update();
 	m_blackButton.Update();
 	m_gamestartFont.Update();
-	m_asobikataFont.Update();
-	m_yajirusi.Update();
-	m_titlefont.Update();
+	m_howtoplayFont.Update();
+	m_choice.Update();
+	m_titleFont.Update();
 }
 
 void Title::Render(RenderContext& rc)

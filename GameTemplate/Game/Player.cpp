@@ -4,7 +4,7 @@
 
 #include "Enemy.h"
 
-#include "IceBall.h"
+#include "MagicBall.h"
 #include "Tower.h"
 
 #include "collision/CollisionObject.h"
@@ -478,13 +478,17 @@ void Player::ChoiseItem()
 
 void Player::MakeMagicBall()
 {
-	IceBall* iceBall = NewGO<IceBall>(0);
-	Vector3 iceBallPosition = m_position;
-	iceBallPosition.y += 55.0f;
-	iceBallPosition += m_forward * 300.0f;
-	iceBall->SetPosition(iceBallPosition);
-	iceBall->SetRotation(m_rotation);
-	iceBall->SetEnUser(IceBall::enUser_Player);
+	//魔法攻撃を作成する
+	MagicBall* magicBall = NewGO<MagicBall>(0);
+	Vector3 magicBallPosition = m_position;
+	//座標を少し上にする
+	magicBallPosition.y += 55.0f;
+	//座標を少し前にする
+	magicBallPosition += m_forward * 300.0f;
+	magicBall->SetPosition(magicBallPosition);
+	magicBall->SetRotation(m_rotation);
+	//使用者はプレイヤー
+	magicBall->SetEnUser(MagicBall::enUser_Player);
 }
 
 void Player::MakeRangeEffect()

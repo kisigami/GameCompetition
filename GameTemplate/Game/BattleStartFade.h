@@ -5,50 +5,30 @@ class BattleStartFade:public IGameObject
 public:
 	enum EnState
 	{
-		enState_FadeIn,
-		enState_FadeOut,
-		enState_Idle,
-	};
-	enum EnEndState
-	{
-		enEndState_FadeIn,
-		enEndState_FadeOut,
-		enEndState_Idle,
+		enState_FadeIn,     //フェードイン
+		enState_FadeOut,    //フェードアウト
+		enState_Idle,       //待機
 	};
 public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-
+	//フェードイン
 	void StartFadeIn()
 	{
+		//フェードインステートへ
 		m_state = enState_FadeIn;
 	}
+	//フェードアウト
 	void StartFadeOut()
 	{
+		//フェードアウトステートへ
 		m_state = enState_FadeOut;
 	}
-
-	void StartEndFadeIn()
-	{
-		m_endstate = enEndState_FadeIn;
-	}
-	
-	void StartEndFadeOut()
-	{
-		m_endstate = enEndState_FadeOut;
-	}
-	const bool IsFade() const
-	{
-		return m_endstate != enEndState_Idle;
-	}
-	SpriteRender m_battlefade;
-	SpriteRender m_worningfont;
-	SpriteRender m_battleend;
-	Vector3      m_position;
-	EnState      m_state = enState_Idle;
-	EnEndState   m_endstate = enEndState_Idle;
-	float        m_currentAlpha = 0.0f;
-	float        m_currentAlpha2 = 0.0f;
+private:
+	SpriteRender m_battlefade;             //スプライトレンダー
+	Vector3      m_position;               //座標
+	EnState      m_state = enState_Idle;   //フェードステート
+	float        m_currentAlpha = 0.0f;    //アルファ値
 };
 

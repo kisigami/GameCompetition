@@ -22,7 +22,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Tower.cpp" />
-    <ClCompile Include="IceBall.cpp" />
+    <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="Enemy.cpp">
       <Filter>enemy</Filter>
     </ClCompile>
@@ -62,7 +62,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Tower.h" />
-    <ClInclude Include="IceBall.h" />
+    <ClInclude Include="MagicBall.h" />
     <ClInclude Include="Enemy.h">
       <Filter>enemy</Filter>
     </ClInclude>

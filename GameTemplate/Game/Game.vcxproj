@@ -160,7 +160,7 @@
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="HowToPlay.cpp" />
-    <ClCompile Include="IceBall.cpp" />
+    <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="MagicEnemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -186,7 +186,7 @@
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="HowToPlay.h" />
-    <ClInclude Include="IceBall.h" />
+    <ClInclude Include="MagicBall.h" />
     <ClInclude Include="MagicEnemy.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerAttackEnemy.h" />
