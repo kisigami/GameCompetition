@@ -76,7 +76,9 @@ void GameCamera::UpdatePositionAndTarget()
 
 void GameCamera::Update()
 {
-	//注視点と視点を更新する
+	/// <summary>
+	/// 視点と注視点を更新
+	/// </summary>
 	UpdatePositionAndTarget();
 	//カメラの更新
 	m_springCamera.Update();

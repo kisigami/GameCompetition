@@ -1,9 +1,13 @@
 #pragma once
-//ばねカメラを使用したい場合は、springcameraをインクルードする
+//ばねカメラを使うため"camera/SpringCamera.h"をインクルードする
 #include "camera/SpringCamera.h"
 
+//クラス宣言
 class Player;        //プレイヤークラス
-//ゲームカメラクラス
+
+/// <summary>
+/// カメラ
+/// </summary>
 class GameCamera : public IGameObject
 {
 public:
@@ -11,8 +15,11 @@ public:
 	~GameCamera();
 	bool Start();
 	void Update();
-	//座標と視点を更新する
+	/// <summary>
+	/// 座標と視点を更新する
+	/// </summary>
 	void UpdatePositionAndTarget();
+
 private:
 	Vector3       m_toCameraPos = Vector3::One;        //注視点から視点に向かうベクトル
 	SpringCamera  m_springCamera;                      //スプリングカメラ

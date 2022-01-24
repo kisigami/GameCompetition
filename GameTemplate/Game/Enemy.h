@@ -5,18 +5,22 @@ class Player;          //プレイヤークラス
 class Tower;           //タワークラス
 class Game;            //ゲームクラス
 
-//エネミー
+/// <summary>
+/// エネミー
+/// </summary>
 class Enemy:public IGameObject
 {
 public:
-	//エネミーステート
+	/// <summary>
+	/// エネミーステート
+	/// </summary>
 	enum EnEnemyState {
-		enEnemyState_Idle,              //待機中
-		enEnemyState_Assault,           //突撃
-		enEnemyState_Attack,            //攻撃
-		enEnemyState_ReceiveDamage,     //被ダメージ
-		enEnemyState_ReceiveRestraint,  //拘束
-		enEnemyState_Down,              //ダウン
+		enEnemyState_Idle,              //待機ステート
+		enEnemyState_Assault,           //突撃ステート
+		enEnemyState_Attack,            //攻撃ステート
+		enEnemyState_ReceiveDamage,     //被ダメージステート
+		enEnemyState_ReceiveRestraint,  //拘束ステート
+		enEnemyState_Down,              //ダウンステート
 	};
 public:
 	Enemy();
@@ -24,72 +28,132 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-	//座標を設定
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="position">座標</param>
 	void SetPosition(const Vector3& position)
 	{
 		m_position = position;
 	}
-	//座標を取得
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
 	const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
-	//大きさを設定
+	/// <summary>
+	/// 大きさを設定
+	/// </summary>
+	/// <param name="scale">大きさ</param>
 	void SetScale(const Vector3& scale)
 	{
 		m_scale = scale;
 	}
-	//回転を設定
+	/// <summary>
+	/// 回転を設定
+	/// </summary>
+	/// <param name="rotation">回転</param>
 	void SetRotation(const Quaternion& rotation)
 	{
 		m_rotation = rotation;
 	}
-	//HPを設定
+	/// <summary>
+	/// HPを設定
+	/// </summary>
+	/// <param name="hp">HP</param>
 	void SetHP(const int hp)
 	{
 		m_hp = hp;
 	}
 
-	//突撃処理
+private:
+	/// <summary>
+	/// 移動処理
+	/// </summary>
 	void Move();
-	//回転処理
+	/// <summary>
+	/// 回転処理
+	/// </summary>
 	void Rotation();
-	//攻撃処理
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
 	void Attack();
-	//プレイヤーとの当たり判定処理
+	/// <summary>
+	/// プレイヤーの攻撃との当たり判定処理
+	/// </summary>
 	void Collision();
-	//攻撃用の当たり判定を作成する
+	/// <summary>
+	/// 攻撃用の当たり判定を作成する
+	/// </summary>
 	void MakeAttackCollision();
-	//拘束処理
+	/// <summary>
+	/// 拘束処理
+	/// </summary>
 	void Restraint();
-	//被ダメージエフェクト
+	/// <summary>
+	/// 被ダメージエフェクト
+	/// </summary>
 	void MakeDamageEffect();
-	//アニメーションイベント用の関数
+	/// <summary>
+	/// アニメーションイベント用の関数
+	/// </summary>
+	/// <param name="clipName">アニメーションの名前</param>
+	/// <param name="eventName">アニメーションイベントのキーの名前</param>
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
-	//アニメーションの再生
+	/// <summary>
+	/// アニメーションの再生
+	/// </summary>
 	void PlayAnimation();
-	//各ステートの遷移処理
+	/// <summary>
+	/// 各ステートの遷移処理
+	/// </summary>
 	void ManageState();
-	//共通のステート遷移処理
+	/// <summary>
+	/// 共通のステート遷移処理
+	/// </summary>
 	void ProcessCommonStateTransition();
-	//待機ステートの遷移処理
+	/// <summary>
+	/// 待機ステートの遷移処理
+	/// </summary>
 	void ProcessIdleStateTransition();
-	//突撃ステートの遷移処理
+	/// <summary>
+	/// 突撃ステートの遷移処理
+	/// </summary>
 	void ProcessAssultStateTransition();
-	//攻撃ステートの遷移処理
+	/// <summary>
+	/// 攻撃ステートの遷移処理
+	/// </summary>
 	void ProcessAttackStateTransition();
-	//被ダメージステートの遷移処理
+	/// <summary>
+	/// 被ダメージステートの遷移処理
+	/// </summary>
 	void ProcessReceiveDamageStateTransition();
-	//ダウンステートの遷移処理
+	/// <summary>
+	/// ダウンステートの遷移処理
+	/// </summary>
 	void ProcessDownStateTransition();
-	//拘束ステートの遷移処理
+	/// <summary>
+	/// 拘束ステートの遷移処理
+	/// </summary>
 	void ProcessReceiveRestraintStateTransition();
 
-	//プレイヤーを攻撃できるか
+	/// <summary>
+	/// プレイヤーを攻撃できるか
+	/// </summary>
+	/// <returns>攻撃できるならtrue</returns>
 	const bool IsCanPlayerAttack() const;
-	//塔を攻撃できるか
+	/// <summary>
+	/// 塔を攻撃できるか
+	/// </summary>
+	/// <returns>攻撃できるならtrue</returns>
 	const bool IsCanTowerAttack() const;
-
+	/// <summary>
+	///アニメーションクリップ
+	/// </summary>
 	enum EnAnimationClip {    	           //アニメーションクリップ
 		enAnimationClip_Idle,              //待機アニメーション
 		enAnimationClip_Assult,            //突撃アニメーション
@@ -99,7 +163,6 @@ public:
 		enAnimationClip_Down,              //ダウンアニメーション
 		enAnimationClip_Num,	           //アニメーションの数
 	};
-
 	AnimationClip         m_animationClips[enAnimationClip_Num];    //アニメーションクリップ 
 	ModelRender           m_modelRender;                            //モデルレンダー
 	CharacterController	  m_charaCon;						        //キャラクターコントローラー

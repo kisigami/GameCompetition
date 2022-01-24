@@ -47,10 +47,14 @@
     <ClCompile Include="TwoSwordEnemy.cpp">
       <Filter>enemy</Filter>
     </ClCompile>
-    <ClCompile Include="TowerUi.cpp" />
-    <ClCompile Include="PlayerUi.cpp" />
     <ClCompile Include="BattleStartFade.cpp" />
     <ClCompile Include="HowToPlay.cpp" />
+    <ClCompile Include="TowerUi.cpp">
+      <Filter>sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUi.cpp">
+      <Filter>sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -87,9 +91,13 @@
     <ClInclude Include="TwoSwordEnemy.h">
       <Filter>enemy</Filter>
     </ClInclude>
-    <ClInclude Include="TowerUi.h" />
-    <ClInclude Include="PlayerUi.h" />
     <ClInclude Include="BattleStartFade.h" />
     <ClInclude Include="HowToPlay.h" />
+    <ClInclude Include="TowerUi.h">
+      <Filter>sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUi.h">
+      <Filter>sprite</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
