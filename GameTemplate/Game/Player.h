@@ -2,65 +2,96 @@
 
 //クラス宣言
 class Game;           //ゲームクラス
-class Enemy;          //エネミークラス
-class MagicBall;        //魔法攻撃クラス
+class MagicBall;      //魔法攻撃クラス
 class Tower;          //タワークラス
 
-//プレイヤー
+/// <summary>
+/// プレイヤー
+/// </summary>
 class Player : public IGameObject
 {
 public:
-	//プレイヤーのステート
+	/// <summary>
+	/// プレイヤーステート
+	/// </summary>
 	enum EnPlayerState {
-		enPlayerState_FadeWait,         //フェード待機
-		enPlayerState_Idle,             //待機中
-		enPlayerState_Run,              //走り
-		enPlayerState_UseItem,          //拘束魔法使用中
-		enPlayerState_UseHeal,          //タワー修理使用中
-		enPlayerState_FirstAttack,      //1回目の攻撃
-		enPlayerState_SecondAttack,     //2回目の攻撃
-		enPlayerState_ThirdAttack,      //3回目の攻撃
-		enPlayerState_Magic,            //魔法攻撃
-		enPlayerState_ReceiveDamage,    //被ダメージ
+		enPlayerState_FadeWait,         //フェード待機ステート
+		enPlayerState_Idle,             //待機ステート
+		enPlayerState_Run,              //走りステート
+		enPlayerState_UseHeal,          //タワー修理使用ステート
+		enPlayerState_UseItem,          //拘束魔法使用ステート
+		enPlayerState_FirstAttack,      //1回目の攻撃ステート
+		enPlayerState_SecondAttack,     //2回目の攻撃ステート
+		enPlayerState_ThirdAttack,      //3回目の攻撃ステート
+		enPlayerState_Magic,            //魔法攻撃ステート
+		enPlayerState_ReceiveDamage,    //被ダメージステート
 	};
-	//アイテムのステート
+public:
+	/// <summary>
+	/// スキルステート
+	/// </summary>
 	enum EnEquipState {
 		enEquipState_Heal,              //タワー修理
 		enEquipState_Thuner,            //拘束魔法
 	};
-
 public:
 	Player();
 	~Player();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-	
-	//座標を設定
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="position">座標</param>
 	void SetPosition(const Vector3& position)
 	{
 		m_position = position;
 	}
-	
-	//座標を取得
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
 	const Vector3& GetPosition() const
 	{
 		return m_position;
 	}
-	
-	//大きさ
+	/// <summary>
+	/// 大きさを取得
+	/// </summary>
+	/// <param name="scale">大きさ</param>
 	void SetScale(const Vector3& scale)
 	{
 		m_scale = scale;
 	}
-	
-	//回転を設定
+	/// <summary>
+	/// 回転を設定
+	/// </summary>
+	/// <param name="rotation">回転</param>
 	void SetRotation(const Quaternion& rotation)
 	{
 		m_rotation = rotation;
 	}
-
-	//動ける状態かどうか
+	/// <summary>
+	/// Mpを設定
+	/// </summary>
+	/// <param name="mp">MP</param>
+	void SetMp(const float& mp)
+	{
+		m_mp = mp;
+	}
+	/// <summary>
+	/// Mpを取得
+	/// </summary>
+	/// <returns>MP</returns>
+	const float& GetMp() const
+	{
+		return m_mp;
+	}
+	/// <summary>
+	/// 動ける状態かどうか取得
+	/// </summary>
+	/// <returns>動けるステートならtrue</returns>
 	bool IsEnableMove() const
 	{
 		return
@@ -73,64 +104,120 @@ public:
 			m_playerState != enPlayerState_ReceiveDamage &&
 			m_playerState != enPlayerState_Magic;
 	}
-
-	//連続攻撃判定
+private:
+	/// <summary>
+	/// 連続攻撃の判定
+	/// </summary>
 	void  Hit();
-	//移動処理
+	/// <summary>
+	/// 移動処理
+	/// </summary>
 	void Move();
-	//回転処理
+	/// <summary>
+	/// 回転処理
+	/// </summary>
 	void Rotation();
-	//当たり判定
+	/// <summary>
+	/// 敵の攻撃との当たり判定処理
+	/// </summary>
 	void Collision();
-	//攻撃中の処理
+	/// <summary>
+	/// 攻撃処理
+	/// </summary>
 	void Attack();
-	//攻撃用のコリジョン
+	/// <summary>
+	/// 攻撃用の当たり判定用のコリジョンを作成する
+	/// </summary>
 	void MakeAttackCollision();
-	//攻撃1のエフェクト
+	/// <summary>
+	/// 1撃目の攻撃エフェクト
+	/// </summary>
 	void MakeFirstSlashingEffect();
-	//攻撃2のエフェクト
+	//// <summary>
+	/// 2撃目の攻撃エフェクト
+	/// </summary>
 	void MakeSecondSlashingEffect();
-	//攻撃3のエフェクト
+	/// <summary>
+	/// 3撃目の攻撃エフェクト
+	/// </summary>
 	void MakeThirdSlashingEffect();
-	//魔法攻撃を作成する
+	/// <summary>
+	/// 魔法攻撃を作成する
+	/// </summary>
 	void MakeMagicBall();
-	//足止めスキル（効果範囲）のエフェクト
+	/// <summary>
+	///足止めスキル（効果範囲）のエフェクト
+	/// </summary>
 	void MakeRangeEffect();
-	//足止めスキル（使用時）のエフェクト
+	/// <summary>
+	/// 足止めスキル（使用時）のエフェクト
+	/// </summary>
 	void MakeEnemyStopEffect();
-	//足止めスキルのコリジョン
+	/// <summary>
+	/// 足止めスキルのコリジョン
+	/// </summary>
 	void MakeEnemyStopCollision();
-	//スキル選択
+	/// <summary>
+	/// スキル選択処理
+	/// </summary>
 	void ChoiseItem();
-
-
-	//アニメーションの再生
+	/// <summary>
+	/// アニメーションの再生
+	/// </summary>
 	void PlayAnimation();
-	//各ステートの遷移処理
+	/// <summary>
+	/// 各ステートの遷移処理
+	/// </summary>
 	void ManageState();
-	//アニメーション名前イベント
+	/// <summary>
+	/// アニメーション名前イベント
+	/// </summary>
+	/// <param name="clipName">アニメーションの名前</param>
+	/// <param name="eventName">アニメーションイベントキーの名前</param>
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
-	//共通のステート遷移処理
+	/// <summary>
+	/// 共通のステート遷移処理
+	/// </summary>
 	void ProcessCommonStateTransition();
-	//待機ステートの遷移処理
+	/// <summary>
+	/// 待機ステートの遷移処理
+	/// </summary>
 	void ProcessIdleStateTransition();
-	//走りステートの遷移処理
+	/// <summary>
+	/// 走りステートの遷移処理
+	/// </summary>
 	void ProcessRunStateTransition();
-	//被ダメージステートの遷移処理
+	/// <summary>
+	/// 被ダメージステートの遷移処理
+	/// </summary>
 	void ProcessDamageStateTransition();
-	//1撃目の攻撃ステートの遷移処理
+	/// <summary>
+	/// 1撃目の攻撃ステートの遷移処理
+	/// </summary>
 	void ProcessAttackStateTransition();
-	//2撃目の攻撃ステートの遷移処理
+	/// <summary>
+	/// 2撃目の攻撃ステートの遷移処理
+	/// </summary>
 	void ProcessAttack2StateTransition();
-	//3撃目の攻撃ステートの遷移処理
+	/// <summary>
+	/// 3撃目の攻撃ステートの遷移処理
+	/// </summary>
 	void ProcessAttack3StateTransition();
-	//魔法攻撃ステートの遷移処理
+	/// <summary>
+	/// 魔法攻撃ステートの遷移処理
+	/// </summary>
 	void ProcessMagicStateTransition();
-	//アイテム使用ステートの遷移処理
+	/// <summary>
+	/// アイテム使用ステートの遷移処理
+	/// </summary>
 	void ProcessUseItemStateTransition();
-	//フェード待機ステートの遷移処理
+	/// <summary>
+	/// フェード待機ステートの遷移処理
+	/// </summary>
 	void ProcessFadeWaitStateTransition();
-	//タワー修理使用中ステートの遷移処理
+	/// <summary>
+	/// タワー修理使用中ステートの遷移処理
+	/// </summary>
 	void ProcessHealStateTransition();
 
 	//アニメーションクリップ
@@ -147,8 +234,6 @@ public:
 		enAnimationClip_Num                //アニメーションの数
 	};
 	
-	SpriteRender m_PlayerUseMagic;
-	SpriteRender PlayerSubMagic;
 	SpriteRender m_itemWaku;
 	SpriteRender m_itemStop;
 	SpriteRender m_itemHeal;
@@ -168,12 +253,10 @@ public:
 	Quaternion           m_rotation;
 	CharacterController  m_charaCon;                           //キャラクターコントローラー
 	EnPlayerState        m_playerState = enPlayerState_Idle;   //ステート
-	EnEquipState         m_equipState = enEquipState_Heal;
-	//使う魔法攻撃
+	EnEquipState         m_equipState = enEquipState_Heal;     //使う魔法攻撃
 	bool                 m_isUnderAttack = false;
 	int                  m_swordBoneId = -1;
-	float                m_hp = 100;
-	float                m_mp = 20;
+	float                m_mp = 40;
 	//0=一撃目　1=2撃目  2=3撃目
 	int Type = 0;
 	//0=タイマー停止　1=タイマー起動
@@ -184,19 +267,15 @@ public:
 	//2撃目からの経過時間
 	float m_attackTimer2 = 0.0f;
 	float timer = 0.0f;
-	
 	float battleStateTimer = 0.0f;
-
-	int Thundernum = 1;
-	int Healnum = 1;
+	int m_restraintNum = 1;
+	int m_repairNum = 1;
 	float m_alpha = 0.0f;
 	float m_alpha2 = 0.0f;
 	float m_alpha3 = 0.0f;
 	EffectEmitter* effectEmitter = nullptr;
 	int a = 0;
 	int b = 0;
-
-	Enemy* m_enemy = nullptr;               //エネミー
 	Game* m_game = nullptr;                 //ゲーム
 	Tower* m_tower = nullptr;               //タワー
 };

@@ -61,7 +61,7 @@ void PlayerUi::Update()
 void PlayerUi::MpScale()
 {
 	//MP‚Ì‘å‚«‚³
-	m_mpSpriteScale = m_player->m_mp / PLAYER_MP_MAX;
+	m_mpSpriteScale = m_player->GetMp() / PLAYER_MP_MAX;
 	//MP‚Ì‘å‚«‚³‚ª0.0f‚æ‚è¬‚³‚©‚Á‚½‚ç
 	if (m_mpSpriteScale < 0.0f)
 	{

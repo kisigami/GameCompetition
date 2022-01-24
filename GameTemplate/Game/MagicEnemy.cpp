@@ -185,10 +185,12 @@ void MagicEnemy::Collision()
 			//被ダメージエフェクトを再生する
 			MakeDamageEffect();
 			//プレイヤーのMpが40以下だったら
-			if (m_player->m_mp < 40)
+			if (m_player->GetMp() < 40)
 			{
+				float playermp = m_player->GetMp();
 				//プレイヤーのMpを10増やす
-				m_player->m_mp += 10;
+				playermp += 10;
+				m_player->SetMp(playermp);
 			}
 
 			//Hpが0になったら
@@ -251,18 +253,17 @@ void MagicEnemy::Restraint()
 void MagicEnemy::MakeDamageEffect()
 {
 	//エフェクトを作成する
-	EffectEmitter* m_effectEmitter;
-	m_effectEmitter = NewGO<EffectEmitter>(0);
-	Vector3 m_EffectPosition = m_position;
-	Vector3 m_EffectScale = m_scale;
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
+	Vector3 effectPosition = m_position;
+	Vector3 effectScale = m_scale;
 	//座標を少し上にする
-	m_EffectPosition.y += 180.0f;
-	m_effectEmitter->SetPosition(m_EffectPosition);
+	effectPosition.y += 180.0f;
+	effectEmitter->SetPosition(effectPosition);
 	//大きさを設定する
-	m_effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
 	//エフェクトを再生する
-	m_effectEmitter->Init(11);
-	m_effectEmitter->Play();
+	effectEmitter->Init(11);
+	effectEmitter->Play();
 }
 
 void MagicEnemy::PlayAnimation()

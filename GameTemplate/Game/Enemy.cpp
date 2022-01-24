@@ -208,18 +208,21 @@ void Enemy::Collision()
 			//被ダメージエフェクトを再生する
 			MakeDamageEffect();
 			//プレイヤーのMpが40より小さかったら
-			if (m_player->m_mp < 40)
+			if (m_player->GetMp() < 40)
 			{
-				//プレイヤーのMpを５増やす
-				m_player->m_mp += 5;
+				float playermp = m_player->GetMp();
+				//プレイヤーのMpを5増やす
+				playermp += 5;
+				//プレイヤーのMPを設定する
+				m_player->SetMp(playermp);
 			}
-			//Hpが0だったら
+			//HPが0だったら
 			if (m_hp == 0)
 			{
 				//ダウンステートへ
 				m_enemyState = enEnemyState_Down;
 			}
-			//Hpが0ではなかったら
+			//HPが0ではなかったら
 			else
 			{
 				//被ダメージステートへ
@@ -236,10 +239,10 @@ void Enemy::Collision()
 		if (collision->IsHit(m_charaCon))
 		{
 			//SEを再生する
-			SoundSource* m_se = NewGO<SoundSource>(0);
-			m_se->Init(32);
-			m_se->SetVolume(0.3f);
-			m_se->Play(false);
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(32);
+			se->SetVolume(0.3f);
+			se->Play(false);
 			//プレイヤーのHpを1減らす
 			m_hp -= 1;
 			//被ダメージエフェクトを再生する
@@ -275,18 +278,17 @@ void Enemy::Restraint()
 void Enemy::MakeDamageEffect()
 {
 	//エフェクトを作成する
-	EffectEmitter* m_effectEmitter;
-	m_effectEmitter = NewGO<EffectEmitter>(0);
+	EffectEmitter* effectEmitter = NewGO<EffectEmitter>(0);
 	Vector3 EffectPosition = m_position;
 	Vector3 EffectScale = m_scale;
 	//座標を少し上にする
 	EffectPosition.y += 180.0f;
-	m_effectEmitter->SetPosition(EffectPosition);
+	effectEmitter->SetPosition(EffectPosition);
 	//大きさを設定する
-	m_effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
 	//エフェクトを再生する
-	m_effectEmitter->Init(11);
-	m_effectEmitter->Play();
+	effectEmitter->Init(11);
+	effectEmitter->Play();
 }
 
 void Enemy::PlayAnimation()

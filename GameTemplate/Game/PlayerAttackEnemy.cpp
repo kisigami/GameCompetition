@@ -206,10 +206,12 @@ void PlayerAttackEnemy::Collision()
 			//被ダメージエフェクトを再生する
 			MakeDamageEffect();
 			//プレイヤーのMpが40以下だったら
-			if (m_player->m_mp < 40)
+			if (m_player->GetMp()< 40)
 			{
+				float playermp = m_player->GetMp();
 				//プレイヤーのMpを5増やす
-				m_player->m_mp += 5;
+				playermp += 5;
+				m_player->SetMp(playermp);
 			}
 			//Hpが0だったら
 			if (m_hp == 0)

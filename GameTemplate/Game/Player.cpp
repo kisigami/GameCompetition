@@ -2,8 +2,6 @@
 #include "Player.h"
 #include "Game.h"
 
-#include "Enemy.h"
-
 #include "MagicBall.h"
 #include "Tower.h"
 
@@ -101,7 +99,6 @@ bool Player::Start()
 	g_soundEngine->ResistWaveFileBank(29, "Assets/sound/sentaku.wav");
 	g_soundEngine->ResistWaveFileBank(30, "Assets/sound/kettei.wav");
 
-	m_enemy = FindGO<Enemy>("enemy");
 	m_tower = FindGO<Tower>("tower");
 	m_game = FindGO<Game>("game");
 	return true;
@@ -131,9 +128,9 @@ void Player::Update()
 	//ステートの遷移処理
 	ManageState();
 
-
 	//モデルの更新
 	m_modelRender.Update();
+
 	//各画像の更新
 	m_sprintRender.Update();
 	m_sprintRender2.Update();
@@ -433,13 +430,13 @@ void Player::MakeThirdSlashingEffect()
 void Player::ChoiseItem()
 {
 	wchar_t text[256];
-	swprintf_s(text, 256, L"%d", Healnum);
+	swprintf_s(text, 256, L"%d", m_repairNum);
 	m_fontRender1.SetText(text);
 	m_fontRender1.SetPosition(Vector3(808.0f, -430.0f, 0.0f));
 	m_fontRender1.SetScale(1.0f);
 
 	wchar_t text3[256];
-	swprintf_s(text3, 256, L"%d", Thundernum);
+	swprintf_s(text3, 256, L"%d", m_restraintNum);
 	m_fontRender2.SetText(text3);
 	m_fontRender2.SetPosition(Vector3(808.0f, -430.0f, 0.0f));
 	m_fontRender2.SetScale(1.0f);
@@ -515,7 +512,7 @@ void Player::MakeEnemyStopCollision()
 		Quaternion::Identity,
 		650.0f);
 	m_collisionObject->SetName("item_thunder");
-	Thundernum -= 1;
+	m_restraintNum -= 1;
 }
 
 void Player::MakeEnemyStopEffect()
@@ -566,7 +563,7 @@ void Player::ProcessCommonStateTransition()
 
 	//RB1ボタンとLB1ボタンが押されたら＆アイテムステートがサンダーなら
 	if (g_pad[0]->IsPress(enButtonRB1) && g_pad[0]->IsPress(enButtonLB1)
-		&& m_equipState == enEquipState_Thuner && Thundernum >= 1)
+		&& m_equipState == enEquipState_Thuner && m_restraintNum >= 1)
 	{
 		//攻撃範囲のエフェクトを作成する
 		MakeRangeEffect();
@@ -584,7 +581,7 @@ void Player::ProcessCommonStateTransition()
 
 	//RB1ボタンとLB1ボタンが押されたら＆アイテムステートが回復なら
 	if (g_pad[0]->IsTrigger(enButtonRB1) && g_pad[0]->IsTrigger(enButtonLB1)
-		&& m_equipState == enEquipState_Heal && Healnum >= 1)
+		&& m_equipState == enEquipState_Heal && m_repairNum >= 1)
 	{
 		if (m_tower->m_hp < 200.0f)
 		{
@@ -597,7 +594,7 @@ void Player::ProcessCommonStateTransition()
 			effectEmitter->Play();
 
 			m_playerState = enPlayerState_UseHeal;
-			Healnum -= 1;
+			m_repairNum -= 1;
 			m_tower->m_hp += 30.0f;
 			SoundSource* m_se = NewGO<SoundSource>(0);
 			m_se->Init(8);

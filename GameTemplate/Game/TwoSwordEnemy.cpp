@@ -218,9 +218,11 @@ void TwoSwordEnemy::Collision()
 			m_se->Play(false);
 			//Hp‚ðŒ¸‚ç‚·
 			m_hp -= 1;
-			if (m_player->m_mp < 40)
+			if (m_player->GetMp() < 40)
 			{
-				m_player->m_mp += 5;
+				float m_playerMp = m_player->GetMp();
+				m_playerMp += 5;
+				m_player->SetMp(m_playerMp);
 			}
 			if (m_hp <= 0)
 			{
