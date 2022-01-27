@@ -64,7 +64,7 @@ bool TowerUi::Start()
 void TowerUi::DurabilityScale()
 {
 	//‘Ï‹v’l‚Ì‰æ‘œ‚Ì‘å‚«‚³
-	m_durabilityScale = m_tower->m_hp / TOWER_DURABILITY_MAX;
+	m_durabilityScale = m_tower->GetDurability() / TOWER_DURABILITY_MAX;
 	//‘Ï‹v’l‚Ì‰æ‘œ‚Ì‘å‚«‚³‚ª0.0f‚æ‚è¬‚³‚©‚Á‚½‚ç
 	if (m_durabilityScale < 0.0f)
 	{

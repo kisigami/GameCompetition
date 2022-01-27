@@ -28,8 +28,8 @@ bool Tower::Start()
 {
 	EffectEngine::GetInstance()->ResistEffect(8, u"Assets/efk/Smoke.efk");
 	EffectEngine::GetInstance()->ResistEffect(9, u"Assets/efk/towereffect.efk");
-	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/towerbreak.wav");
-	g_soundEngine->ResistWaveFileBank(44, "Assets/sound/towerdamage.wav");
+	g_soundEngine->ResistWaveFileBank(15, "Assets/sound/towerbreak.wav");
+	g_soundEngine->ResistWaveFileBank(16, "Assets/sound/towerdamage.wav");
 	m_modelRender.Init("Assets/modelData/tower2/tower2.tkm");
 	m_modelRender.SetPosition(m_position);
 	//大きさを設定する。
@@ -61,10 +61,8 @@ bool Tower::Start()
 		300.0f,
 		m_position
 	);
-	//TowerEffect();
-	m_enemy = FindGO<Enemy>("enemy");
-	m_game = FindGO<Game>("game");
 
+	m_game = FindGO<Game>("game");
 	return true;
 }
 
@@ -91,7 +89,7 @@ void Tower::Collision()
 			SetDurability(towerdurability);
 
 			//耐久値が0.0fより小さかったら
-			if (GetDurability() <= 0.0f) 
+			if (GetDurability() > 0.0f) 
 			{
 				//SEを再生する
 				SoundSource* se = NewGO<SoundSource>(0);
@@ -126,16 +124,7 @@ void Tower::Collision()
 			SetDurability(towerdurability);
 
 			//タワーの耐久値が0.0fより小さかったら
-			if (GetDurability() <= 0.0f) 
-			{
-				//ゲームオーバーを通知する
-				m_game->GameOverNotice();
-				//タワー破壊フラグがtrueにする
-				m_towerBreakFrag = true;
-				return;
-			}
-			//タワーの耐久値が0.0fより大きかったら
-			else
+			if (GetDurability() > 0.0f) 
 			{
 				//SEを再生する
 				SoundSource* se = NewGO<SoundSource>(0);
@@ -144,6 +133,15 @@ void Tower::Collision()
 				se->Play(false);
 				//ダメージ無効ステートへ
 				m_towerState = enTowerState_DamageInvalid;
+				return;
+			}
+			//タワーの耐久値が0.0fより大きかったら
+			else
+			{
+				//ゲームオーバーを通知する
+				m_game->GameOverNotice();
+				//タワー破壊フラグがtrueにする
+				m_towerBreakFrag = true;
 				return;
 			}
 		}
@@ -189,9 +187,9 @@ void Tower::Collision()
 			towerdurabiity -= 15.0f;
 			SetDurability(towerdurabiity);
 
-			if ( <= 0) {
+			if (towerdurabiity <= 0) {
 				m_game->GameOverNotice();
-				TowerBreak = true;
+				m_towerBreakFrag = true;
 				return;
 			}
 			else
@@ -222,17 +220,6 @@ void Tower::BreakEffect()
 	m_se->SetVolume(0.5f);
 	m_se->Play(false);
 
-}
-
-void  Tower::TowerEffect()
-{
-	effectEmitter = NewGO<EffectEmitter>(0);
-	effectEmitter->Init(9);
-	effectEmitter->SetScale(Vector3(10.0f, 10.0f, 10.0f));
-	Vector3 effectPosition = m_position;
-	effectPosition.y += 1800.0f;
-	effectEmitter->SetPosition(effectPosition);
-	effectEmitter->Play();
 }
 
 void Tower::DamageInvalid()

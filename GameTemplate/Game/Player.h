@@ -4,6 +4,7 @@
 class Game;           //ゲームクラス
 class MagicBall;      //魔法攻撃クラス
 class Tower;          //タワークラス
+class PlayerUi;       //プレイヤーUI
 
 /// <summary>
 /// プレイヤー
@@ -18,11 +19,11 @@ public:
 		enPlayerState_FadeWait,         //フェード待機ステート
 		enPlayerState_Idle,             //待機ステート
 		enPlayerState_Run,              //走りステート
-		enPlayerState_UseHeal,          //タワー修理使用ステート
-		enPlayerState_UseItem,          //拘束魔法使用ステート
-		enPlayerState_FirstAttack,      //1回目の攻撃ステート
-		enPlayerState_SecondAttack,     //2回目の攻撃ステート
-		enPlayerState_ThirdAttack,      //3回目の攻撃ステート
+		enPlayerState_Repair,           //タワー修理使用ステート
+		enPlayerState_Restraint,        //拘束魔法使用ステート
+		enPlayerState_FirstAttack,      //1撃目の攻撃ステート
+		enPlayerState_SecondAttack,     //2撃目の攻撃ステート
+		enPlayerState_ThirdAttack,      //3撃目の攻撃ステート
 		enPlayerState_Magic,            //魔法攻撃ステート
 		enPlayerState_ReceiveDamage,    //被ダメージステート
 	};
@@ -30,9 +31,9 @@ public:
 	/// <summary>
 	/// スキルステート
 	/// </summary>
-	enum EnEquipState {
-		enEquipState_Heal,              //タワー修理
-		enEquipState_Thuner,            //拘束魔法
+	enum EnSkillState {
+		enSkillState_Repair,              //タワー修理ステート
+		enSkillState_Restraint,           //拘束魔法ステート
 	};
 public:
 	Player();
@@ -99,14 +100,50 @@ public:
 			m_playerState != enPlayerState_FirstAttack &&
 			m_playerState != enPlayerState_SecondAttack &&
 			m_playerState != enPlayerState_ThirdAttack &&
-			m_playerState != enPlayerState_UseItem &&
-			m_playerState != enPlayerState_UseHeal &&
+			m_playerState != enPlayerState_Restraint &&
+			m_playerState != enPlayerState_Repair &&
 			m_playerState != enPlayerState_ReceiveDamage &&
 			m_playerState != enPlayerState_Magic;
 	}
+	/// <summary>
+	/// タワー修理ステートか？
+	/// </summary>
+	/// <returns>タワー修理ステートならtrue</returns>
+	const bool SelectRepair() const
+	{
+		return m_skillState == enSkillState_Repair;
+	}
+	/// <summary>
+	/// 拘束魔法ステートか？
+	/// </summary>
+	/// <returns>拘束魔法ステートならtrue</returns>
+	const bool SelectRestraint() const
+	{
+		return m_skillState == enSkillState_Restraint;
+	}
+	/// <summary>
+	/// タワー修理の使用回数を取得
+	/// </summary>
+	/// <returns>タワー修理の使用回数</returns>
+	const int& GetRepairNum() const
+	{
+		return m_repairNum;
+	}
+	/// <summary>
+	/// 拘束魔法の使用回数を取得
+	/// </summary>
+	/// <returns>拘束魔法の使用回数</returns>
+	const int& GetRestraintNum() const
+	{
+		return m_restraintNum;
+	}
 private:
 	/// <summary>
-	/// 連続攻撃の判定
+	/// スキル選択処理
+	/// </summary>
+	void SelectSkill();
+	/// <summary>
+	/// 連続攻撃の判定処理
 	/// </summary>
 	void  Hit();
 	/// <summary>
@@ -146,21 +183,21 @@ private:
 	/// </summary>
 	void MakeMagicBall();
 	/// <summary>
-	///足止めスキル（効果範囲）のエフェクト
+	///	拘束魔法の効果範囲のエフェクト
 	/// </summary>
-	void MakeRangeEffect();
+	void MakeRestraintRangeEffect();
 	/// <summary>
-	/// 足止めスキル（使用時）のエフェクト
+	/// 拘束魔法のエフェクト
 	/// </summary>
-	void MakeEnemyStopEffect();
+	void MakeRestraintEffect();
 	/// <summary>
-	/// 足止めスキルのコリジョン
+	/// 拘束魔法のコリジョン
 	/// </summary>
-	void MakeEnemyStopCollision();
+	void MakeRestraintCollision();
 	/// <summary>
-	/// スキル選択処理
+	/// タワー修理のエフェクト
 	/// </summary>
-	void ChoiseItem();
+	void MakeRepairEffect();
 	/// <summary>
 	/// アニメーションの再生
 	/// </summary>
@@ -194,88 +231,68 @@ private:
 	/// <summary>
 	/// 1撃目の攻撃ステートの遷移処理
 	/// </summary>
-	void ProcessAttackStateTransition();
+	void ProcessFristAttackStateTransition();
 	/// <summary>
 	/// 2撃目の攻撃ステートの遷移処理
 	/// </summary>
-	void ProcessAttack2StateTransition();
+	void ProcessSecondAttackStateTransition();
 	/// <summary>
 	/// 3撃目の攻撃ステートの遷移処理
 	/// </summary>
-	void ProcessAttack3StateTransition();
+	void ProcessThirdAttackStateTransition();
 	/// <summary>
 	/// 魔法攻撃ステートの遷移処理
 	/// </summary>
 	void ProcessMagicStateTransition();
 	/// <summary>
-	/// アイテム使用ステートの遷移処理
+	/// 拘束魔法ステートの遷移処理
 	/// </summary>
-	void ProcessUseItemStateTransition();
+	void ProcessRestraintStateTransition();
 	/// <summary>
 	/// フェード待機ステートの遷移処理
 	/// </summary>
 	void ProcessFadeWaitStateTransition();
 	/// <summary>
-	/// タワー修理使用中ステートの遷移処理
+	/// タワー修理ステートの遷移処理
 	/// </summary>
-	void ProcessHealStateTransition();
+	void ProcessRepairStateTransition();
 
 	//アニメーションクリップ
 	enum EnAnimationClip {
 		enAnimationClip_Idle,              //待機アニメーション
 		enAnimationClip_Run,               //走りアニメーション
 		enAnimationClip_Damage,            //被ダメージアニメーション
-		enAnimationClip_FirstAttack,       //攻撃アニメーション（1撃目）
-		enAnimationClip_SecondAttack,      //攻撃アニメーション（2撃目）
-		enAnimationClip_ThirdAttack,       //攻撃アニメーション（3撃目）
+		enAnimationClip_FirstAttack,       //1撃目の攻撃アニメーション
+		enAnimationClip_SecondAttack,      //2撃目の攻撃アニメーション
+		enAnimationClip_ThirdAttack,       //3撃目の攻撃アニメーション
 		enAnimationClip_Magic,             //魔法攻撃アニメーション
-		enAnimationClip_UseItem,		   //スキル使用アニメーション（拘束魔法）
-		enAnimationClip_UseHeal,           //スキル使用アニメーション（タワー修理）
+		enAnimationClip_Restraint,		   //拘束魔法アニメーション
+		enAnimationClip_Repair,            //タワー修理アニメーション
 		enAnimationClip_Num                //アニメーションの数
 	};
-	
-	SpriteRender m_itemWaku;
-	SpriteRender m_itemStop;
-	SpriteRender m_itemHeal;
-
-	ModelRender          m_modelRender;
-	SpriteRender         m_sprintRender;
-	SpriteRender         m_sprintRender2;
-	SpriteRender         m_sprintRender3;
-	FontRender           m_fontRender1;
-	FontRender           m_fontRender2;
-	FontRender           m_fontRender3;  
-	AnimationClip		 m_animationClips[enAnimationClip_Num];//アニメーションクリップ//モデルレンダー
-	Vector3              m_position;       
-	Vector3              m_scale = Vector3::One;                         //大きさ
-	Vector3              m_moveSpeed;                          //移動速度
-	Vector3              m_forward = Vector3::AxisZ;           //前//回転
-	Quaternion           m_rotation;
-	CharacterController  m_charaCon;                           //キャラクターコントローラー
-	EnPlayerState        m_playerState = enPlayerState_Idle;   //ステート
-	EnEquipState         m_equipState = enEquipState_Heal;     //使う魔法攻撃
-	bool                 m_isUnderAttack = false;
-	int                  m_swordBoneId = -1;
-	float                m_mp = 40;
-	//0=一撃目　1=2撃目  2=3撃目
-	int Type = 0;
-	//0=タイマー停止　1=タイマー起動
-	int move = 0;
-	int move2 = 0;
-	//1撃目からの経過時間
-	float m_attackTimer = 0.0f;
-	//2撃目からの経過時間
-	float m_attackTimer2 = 0.0f;
-	float timer = 0.0f;
-	float battleStateTimer = 0.0f;
-	int m_restraintNum = 1;
-	int m_repairNum = 1;
-	float m_alpha = 0.0f;
-	float m_alpha2 = 0.0f;
-	float m_alpha3 = 0.0f;
-	EffectEmitter* effectEmitter = nullptr;
-	int a = 0;
-	int b = 0;
-	Game* m_game = nullptr;                 //ゲーム
-	Tower* m_tower = nullptr;               //タワー
+    
+	ModelRender          m_modelRender;                          //モデルレンダー
+	AnimationClip		 m_animationClips[enAnimationClip_Num];  //アニメーションクリップ//モデルレンダー
+	Vector3              m_position;                             //座標
+	Vector3              m_scale = Vector3::One;                 //大きさ
+	Vector3              m_moveSpeed;                            //移動速度
+	Vector3              m_forward = Vector3::AxisZ;             //プレイヤーの前方向のベクトル
+	Quaternion           m_rotation;                             //回転
+	CharacterController  m_charaCon;                             //キャラクターコントローラー
+	EnPlayerState        m_playerState = enPlayerState_Idle;     //プレイヤーステート
+	EnSkillState         m_skillState = enSkillState_Restraint;  //スキルステート
+	bool                 m_isUnderAttack = false;                //攻撃中か？
+	int                  m_swordBoneId = -1;                     //ソードボーンID
+	float                m_mp = 40;                              //MP
+	int                  m_attackNumber = 0;                     //攻撃番号
+	bool                 m_secondAttackTimerFrag = false;        //1撃目からのタイマーのフラグ
+	bool                 m_thirdAttackTimerFrag = false;         //2撃目からのタイマーのフラグ
+	float                m_secondAttackTimer = 0.0f;             //1撃目からのタイマー
+	float                m_thirdAttackTimer = 0.0f;              //2撃目からのタイマー
+	bool                 m_pressButtonFrag = false;              //プレスボタンフラグ
+	int                  m_restraintNum = 1;                     //拘束魔法の使用回数
+	int                  m_repairNum = 1;                        //タワー修理の使用回数
+	Game*                m_game = nullptr;                       //ゲーム
+	Tower*               m_tower = nullptr;                      //タワー
+	PlayerUi*            m_playerUi = nullptr;                   //プレイヤーUI
 };

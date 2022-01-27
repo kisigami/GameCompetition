@@ -18,9 +18,9 @@ HowToPlay::~HowToPlay()
 
 bool HowToPlay::Start()
 {
-	g_soundEngine->ResistWaveFileBank(28, "Assets/sound/howtoplay.wav");
-	g_soundEngine->ResistWaveFileBank(29, "Assets/sound/sentaku.wav");
-	g_soundEngine->ResistWaveFileBank(30, "Assets/sound/kettei.wav");
+	g_soundEngine->ResistWaveFileBank(14, "Assets/sound/howtoplay.wav");
+	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/sentaku.wav");
+	g_soundEngine->ResistWaveFileBank(10, "Assets/sound/kettei.wav");
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(28);
 	m_bgm->Play(true);

@@ -66,7 +66,7 @@ bool MagicEnemy::Start()
 		});
 
 	//SEの読み込み
-	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
+	g_soundEngine->ResistWaveFileBank(8, "Assets/sound/enemydamage.wav");
 
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");
@@ -177,7 +177,7 @@ void MagicEnemy::Collision()
 		{
 			//SEを再生する
 			SoundSource* m_se = NewGO<SoundSource>(0);
-			m_se->Init(32);
+			m_se->Init(8);
 			m_se->SetVolume(0.3f);
 			m_se->Play(false);
 			//Hpを1減らす
@@ -217,7 +217,7 @@ void MagicEnemy::Collision()
 		{
 			//SEを再生する
 			SoundSource* m_se = NewGO<SoundSource>(0);
-			m_se->Init(32);
+			m_se->Init(8);
 			m_se->SetVolume(0.3f);
 			m_se->Play(false);
 			//Hpを1減らす
@@ -262,7 +262,7 @@ void MagicEnemy::MakeDamageEffect()
 	//大きさを設定する
 	effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
 	//エフェクトを再生する
-	effectEmitter->Init(11);
+	effectEmitter->Init(10);
 	effectEmitter->Play();
 }
 

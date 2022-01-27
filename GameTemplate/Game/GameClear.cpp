@@ -38,8 +38,8 @@ bool GameClear::Start()
     m_choice.SetPosition(Vector3(0.0f, CHOICE_POSITION, 0.0f));
    
     //SE‚ÆBGM‚ğ“Ç‚İ‚Ş
-    g_soundEngine->ResistWaveFileBank(24, "Assets/sound/clear2.wav");
-    g_soundEngine->ResistWaveFileBank(30, "Assets/sound/kettei.wav");
+    g_soundEngine->ResistWaveFileBank(12, "Assets/sound/clear2.wav");
+    g_soundEngine->ResistWaveFileBank(10, "Assets/sound/kettei.wav");
    
     //BGM‚ğÄ¶‚·‚é
     m_bgm = NewGO<SoundSource>(0);

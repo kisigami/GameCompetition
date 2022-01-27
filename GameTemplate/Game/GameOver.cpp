@@ -36,13 +36,13 @@ bool GameOver::Start()
     m_titleFont.Init("Assets/sprite/title.dds", SIDE_SIZE, LENGTH_SIZE);
     m_titleFont.SetMulColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
     m_continyuFont.Init("Assets/sprite/continyu.dds", SIDE_SIZE, LENGTH_SIZE);
-    m_choice.Init("Assets/sprite/yajirusi.dds", SIDE_SIZE, LENGTH_SIZE);
+    m_choice.Init("Assets/sprite/choice.dds", SIDE_SIZE, LENGTH_SIZE);
     m_overFont.Init("Assets/sprite/overfont.dds", SIDE_SIZE, LENGTH_SIZE);
 
     //SE‚ÆBGM‚ğ“Ç‚İ‚Ş
-    g_soundEngine->ResistWaveFileBank(25, "Assets/sound/over.wav");
-    g_soundEngine->ResistWaveFileBank(29, "Assets/sound/sentaku.wav");
-    g_soundEngine->ResistWaveFileBank(30, "Assets/sound/kettei.wav");
+    g_soundEngine->ResistWaveFileBank(13, "Assets/sound/over.wav");
+    g_soundEngine->ResistWaveFileBank(7, "Assets/sound/sentaku.wav");
+    g_soundEngine->ResistWaveFileBank(10, "Assets/sound/kettei.wav");
 
     //BGM‚ğÄ¶‚·‚é
     m_bgm = NewGO<SoundSource>(0);

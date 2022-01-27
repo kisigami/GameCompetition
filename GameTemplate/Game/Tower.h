@@ -111,7 +111,6 @@ private:
 	Quaternion m_rotation;
 	PhysicsStaticObject m_physicsStaticObject;
 	CharacterController m_charaCon;
-	Enemy* m_enemy = nullptr;
 	Game* m_game = nullptr;
 	GameOver* m_gameOver;
 	bool m_towerBreakFrag = false;

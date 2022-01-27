@@ -41,9 +41,9 @@ bool Title::Start()
 	m_choice.Init("Assets/sprite/choice.dds", SIDE_SIZE, LENGTH_SIZE);
 	
 	//SE‚ÆBGM‚ğ“Ç‚İ‚Ş
-	g_soundEngine->ResistWaveFileBank(29, "Assets/sound/sentaku.wav");
-	g_soundEngine->ResistWaveFileBank(30, "Assets/sound/kettei.wav");
-	g_soundEngine->ResistWaveFileBank(23, "Assets/sound/title2.wav");
+	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/sentaku.wav");
+	g_soundEngine->ResistWaveFileBank(10, "Assets/sound/kettei.wav");
+	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/title2.wav");
 
 	//BGM‚ğÄ¶‚·‚é
 	m_bgm = NewGO<SoundSource>(0);

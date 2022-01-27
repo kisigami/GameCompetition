@@ -39,6 +39,12 @@ bool PlayerUi::Start()
 	m_mpButtom.Init("Assets/sprite/UI/playerhpbuttom.dds", SIDE_SIZE, LENGTH_SIZE);
 	m_mpButtom.SetPosition(Vector3(MP_BUTTOM_POSITION_X, MP_BUTTOM_POSITION_Y, 0.0f));
 	m_mpButtom.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, MP_BUTTOM_ALPHA));
+	//スキルの枠の画像の読み込
+	m_skillFrame.Init("Assets/sprite/skill/skillframe.dds", SIDE_SIZE, LENGTH_SIZE);
+	//拘束魔法の画像の読み込み
+	m_restraint.Init("Assets/sprite/skill/restraint.dds", SIDE_SIZE, LENGTH_SIZE);
+	//タワー修理の画像の読み込み
+	m_repair.Init("Assets/sprite/skill/repair.dds", SIDE_SIZE, LENGTH_SIZE);
 
 	m_player = FindGO<Player>("player");
 	return true;
@@ -50,34 +56,75 @@ void PlayerUi::Update()
 	/// Mpの画像の大きさの処理
 	/// </summary>
 	MpScale();
-
+	/// <summary>
+	/// スキルの文字の処理
+	/// </summary>
+	SkillFont();
 	//画像の更新処理
 	m_playerIcon.Update();
 	m_mpButtom.Update();
 	m_mp.Update();
 	m_mpFarame.Update();
+	m_skillFrame.Update();
+	m_restraint.Update();
+	m_repair.Update();
 }
 
 void PlayerUi::MpScale()
 {
-	//MPの大きさ
+	//MPの画像の大きさ
 	m_mpSpriteScale = m_player->GetMp() / PLAYER_MP_MAX;
-	//MPの大きさが0.0fより小さかったら
-	if (m_mpSpriteScale < 0.0f)
+	//MPの画像の大きさが0.0fより小さかったら
+	if (m_mpSpriteScale <= 0.0f)
 	{
-		//MPの大きさを0にする
+		//MPの画像の大きさを0.0fにする
 		m_mp.SetScale(Vector3(0.0f, 1.0f, 1.0f));
 		return;
 	}
-
+	//MPの画像の大きさを設定
 	m_mp.SetScale(Vector3(m_mpSpriteScale, 1.0f, 1.0f));
+}
+
+void PlayerUi::SkillFont()
+{
+	wchar_t text[256];
+	//プレイヤーがスキル（拘束魔法）を選択していたら
+	if (m_player->SelectRestraint())
+	{
+		//拘束魔法の残り使用回数
+		swprintf_s(text, 256, L"%d", m_player->GetRestraintNum());
+	}
+	//プレイヤーがスキル（タワー修理）を選択していたら
+	else if (m_player->SelectRepair())
+	{
+		//タワー修理の残り使用回数
+		swprintf_s(text, 256, L"%d", m_player->GetRepairNum());
+	}
+	m_skillNumFont.SetText(text);
+	m_skillNumFont.SetPosition(Vector3(808.0f, -430.0f, 0.0f));
+	m_skillNumFont.SetScale(1.0f);
 }
 
 void PlayerUi::Render(RenderContext& rc)
 {
+	//文字の描画処理
+	m_skillNumFont.Draw(rc);
 	//画像の描画処理
 	m_mpButtom.Draw(rc);
 	m_playerIcon.Draw(rc);
 	m_mp.Draw(rc);
 	m_mpFarame.Draw(rc);
+	m_skillFrame.Draw(rc);
+	//プレイヤーが拘束魔法を選択していたら
+	if (m_player->SelectRestraint())
+	{
+		//拘束魔法の画像を描画する
+		m_restraint.Draw(rc);
+	}
+	//プレイヤーがタワー修理を選択していたら
+	else if (m_player->SelectRepair())
+	{
+		//タワー修理の画像を描画する
+		m_repair.Draw(rc);
+	}
 }

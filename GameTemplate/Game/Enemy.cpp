@@ -66,9 +66,9 @@ bool Enemy::Start()
 		});
 
 	//エフェクトの読み込み
-	EffectEngine::GetInstance()->ResistEffect(11, u"Assets/efk/enemydamage.efk");
+	EffectEngine::GetInstance()->ResistEffect(10, u"Assets/efk/enemydamage.efk");
 	//サウンドの読み込み
-	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
+	g_soundEngine->ResistWaveFileBank(8, "Assets/sound/enemydamage.wav");
 
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");
@@ -200,7 +200,7 @@ void Enemy::Collision()
 		{
 			//SEを再生する
 			SoundSource* m_se = NewGO<SoundSource>(0);
-			m_se->Init(32);
+			m_se->Init(8);
 			m_se->SetVolume(0.3f);
 			m_se->Play(false);
 			//Hpを1減らす
@@ -240,7 +240,7 @@ void Enemy::Collision()
 		{
 			//SEを再生する
 			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(32);
+			se->Init(8);
 			se->SetVolume(0.3f);
 			se->Play(false);
 			//プレイヤーのHpを1減らす
@@ -287,7 +287,7 @@ void Enemy::MakeDamageEffect()
 	//大きさを設定する
 	effectEmitter->SetScale(Vector3(0.5f, 1.0f, 1.0f));
 	//エフェクトを再生する
-	effectEmitter->Init(11);
+	effectEmitter->Init(10);
 	effectEmitter->Play();
 }
 

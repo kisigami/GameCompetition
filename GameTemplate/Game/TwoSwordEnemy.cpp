@@ -55,7 +55,7 @@ bool TwoSwordEnemy::Start()
 		OnAnimationEvent(clipName, eventName);
 		});
 
-	g_soundEngine->ResistWaveFileBank(32, "Assets/sound/enemydamage.wav");
+	g_soundEngine->ResistWaveFileBank(8, "Assets/sound/enemydamage.wav");
 
 	m_player = FindGO<Player>("player");
 	m_tower = FindGO<Tower>("tower");

@@ -62,7 +62,7 @@ bool Game::Start()
 	enemynum.SetPosition(Vector3(0.0f, -10.0f, 0.0f));
 	buttom.Init("Assets/sprite/roundbuttom.dds", 1920.0f, 1080.0f);
 
-	g_soundEngine->ResistWaveFileBank(22, "Assets/sound/gamebgm.wav");
+	g_soundEngine->ResistWaveFileBank(9, "Assets/sound/gamebgm.wav");
 	m_gameclear = FindGO<GameClear>("gameclear");
 	m_towerui = NewGO<TowerUi>(0, "towerui");
 	m_playerui = NewGO<PlayerUi>(0, "playerui");
